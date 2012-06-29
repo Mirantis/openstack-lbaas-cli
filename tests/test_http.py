@@ -1,7 +1,8 @@
 import httplib2
 import mock
 
-from tests import utils
+from .utils import unittest
+
 from balancerclient.common import client
 from balancerclient.common import exceptions
 
@@ -24,7 +25,7 @@ def get_authed_client():
     return cl
 
 
-class ClientTest(utils.TestCase):
+class ClientTest(unittest.TestCase):
 
     def test_get(self):
         cl = get_authed_client()

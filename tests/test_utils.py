@@ -1,4 +1,5 @@
-from tests import utils as test_utils
+from .utils import unittest
+
 from balancerclient.common import exceptions
 from balancerclient.common import utils
 from balancerclient.common import base
@@ -42,7 +43,7 @@ class FakeManager(base.ManagerWithFind):
         return self.resources
 
 
-class FindResourceTestCase(test_utils.TestCase):
+class FindResourceTestCase(unittest.TestCase):
 
     def setUp(self):
         self.manager = FakeManager(None)

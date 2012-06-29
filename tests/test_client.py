@@ -1,9 +1,10 @@
-from tests import utils
+from .utils import unittest
+
 from balancerclient.common import client
 
 
-utils.skip("need to implement client class")
-class ClientTest(utils.TestCase):
+@unittest.skip("need to implement version client class")
+class ClientTest(unittest.TestCase):
 
     def setUp(self):
         pass

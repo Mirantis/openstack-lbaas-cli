@@ -1,5 +1,6 @@
-import unittest2
+import sys
 
-
-class TestCase(unittest2.TestCase):
-    pass
+if (2, 4) < sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest

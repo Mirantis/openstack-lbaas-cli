@@ -1,4 +1,4 @@
-from tests import utils
+from .utils import unittest
 
 from balancerclient.common import exceptions
 from balancerclient.common import service_catalog
@@ -100,7 +100,7 @@ SERVICE_CATALOG = {
 }
 
 
-class ServiceCatalogTest(utils.TestCase):
+class ServiceCatalogTest(unittest.TestCase):
     def test_building_a_service_catalog(self):
         sc = service_catalog.ServiceCatalog(SERVICE_CATALOG)
 
