@@ -1,7 +1,5 @@
-
-import novaclient.client
-import novaclient.v1_1.client
 from tests import utils
+from balancerclient.common import client
 
 
 class ClientTest(utils.TestCase):

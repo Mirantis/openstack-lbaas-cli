@@ -22,8 +22,9 @@ Base utilities to build API operation managers and objects on top of.
 import contextlib
 import hashlib
 import os
-from novaclient import exceptions
-from novaclient import utils
+
+from . import exceptions
+from . import utils
 
 
 # Python 2.4 compat

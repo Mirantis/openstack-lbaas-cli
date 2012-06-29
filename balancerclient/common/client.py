@@ -23,9 +23,9 @@ if not hasattr(urlparse, 'parse_qsl'):
     import cgi
     urlparse.parse_qsl = cgi.parse_qsl
 
-from novaclient import exceptions
-from novaclient import service_catalog
-from novaclient import utils
+from . import exceptions
+from . import service_catalog
+from . import utils
 
 
 _logger = logging.getLogger(__name__)

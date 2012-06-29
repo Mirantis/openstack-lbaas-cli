@@ -1,9 +1,9 @@
 import httplib2
 import mock
 
-from novaclient import client
-from novaclient import exceptions
 from tests import utils
+from balancerclient.common import client
+from balancerclient.common import exceptions
 
 
 fake_response = httplib2.Response({"status": 200})

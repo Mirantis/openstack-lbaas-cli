@@ -1,6 +1,7 @@
-from novaclient import exceptions
-from novaclient import service_catalog
 from tests import utils
+
+from balancerclient.common import exceptions
+from balancerclient.common import service_catalog
 
 
 # Taken directly from keystone/content/common/samples/auth.json

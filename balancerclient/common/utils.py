@@ -5,7 +5,7 @@ import uuid
 
 import prettytable
 
-from novaclient import exceptions
+from . import exceptions
 
 
 def arg(*args, **kwargs):

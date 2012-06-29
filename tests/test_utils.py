@@ -1,8 +1,8 @@
-
-from novaclient import exceptions
-from novaclient import utils
-from novaclient import base
 from tests import utils as test_utils
+from balancerclient.common import exceptions
+from balancerclient.common import utils
+from balancerclient.common import base
+
 
 UUID = '8e8ec658-c7b0-4243-bdf8-6f7f2952c0d0'
 

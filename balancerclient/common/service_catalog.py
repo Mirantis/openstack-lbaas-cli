@@ -15,8 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-import novaclient.exceptions
+from . import exceptions
 
 
 class ServiceCatalog(object):
