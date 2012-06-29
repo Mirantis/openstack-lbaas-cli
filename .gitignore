@@ -1,2 +1,11 @@
 *.swp
 *.pyc
+.coverage
+.venv
+.tox
+*.pyc
+*~
+cover
+build
+dist
+python_balancerclient.egg-info
