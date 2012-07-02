@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import uuid
+import logging
 
 import prettytable
 
@@ -263,3 +264,25 @@ def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
     value = unicode(_slugify_strip_re.sub('', value).strip().lower())
     return _slugify_hyphenate_re.sub('-', value)
+
+
+def http_log(_logger, args, kwargs, resp, body):
+        if not _logger.isEnabledFor(logging.DEBUG):
+            return
+
+        string_parts = ['curl -i']
+        for element in args:
+            if element in ('GET', 'POST'):
+                string_parts.append(' -X %s' % element)
+            else:
+                string_parts.append(' %s' % element)
+
+        for element in kwargs['headers']:
+            header = ' -H "%s: %s"' % (element, kwargs['headers'][element])
+            string_parts.append(header)
+
+        _logger.debug("REQ: %s\n" % "".join(string_parts))
+        if 'body' in kwargs and kwargs['body']:
+            _logger.debug("REQ BODY: %s\n" % (kwargs['body']))
+        _logger.debug("RESP:%s\n", resp)
+        _logger.debug("RESP BODY:%s\n", body)
