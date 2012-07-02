@@ -9,67 +9,41 @@ from balancerclient.common import exceptions
 
 fake_response = httplib2.Response({"status": 200})
 fake_body = '{"hi": "there"}'
-mock_request = mock.Mock(return_value=(fake_response, fake_body))
 
 
 def get_client():
-    cl = client.HTTPClient("username", "password",
-                           "project_id", "auth_test")
+    cl = client.HTTPClient(username="username", password="password",
+                           tenant_name="project_name", auth_url="auth_test")
     return cl
 
 
 def get_authed_client():
     cl = get_client()
-    cl.management_url = "http://example.com"
-    cl.auth_token = "token"
+    cl.endpoint_url = 'http://example.com'
+    cl.auth_token = 'token'
     return cl
 
 
 class ClientTest(unittest.TestCase):
 
-    def test_get(self):
+    @mock.patch('httplib2.Http.request')
+    @mock.patch('time.time')
+    def test_get(self, mock_time, mock_request):
+        mock_time.return_value = 1234
+        mock_request.return_value = (fake_response, fake_body)
         cl = get_authed_client()
+        resp, body = cl.do_request('/hi', 'GET')
+        headers = {'X-Auth-Token': 'token',
+                   'User-Agent': cl.USER_AGENT,
+                   'Accept': 'application/json',
+                   'Content-Type': 'application/json',
+        }
+        self.assertEqual(mock_request.call_args,
+                         mock.call('http://example.com/hi', 'GET',
+                                   headers=headers))
 
-        @mock.patch.object(httplib2.Http, "request", mock_request)
-        @mock.patch('time.time', mock.Mock(return_value=1234))
-        def test_get_call():
-            resp, body = cl.get("/hi")
-            headers = {"X-Auth-Token": "token",
-                       "X-Auth-Project-Id": "project_id",
-                       "User-Agent": cl.USER_AGENT,
-                       'Accept': 'application/json',
-            }
-            mock_request.assert_called_with("http://example.com/hi",
-                                            "GET", headers=headers)
-            # Automatic JSON parsing
-            self.assertEqual(body, {"hi": "there"})
-
-        test_get_call()
-
-    def test_post(self):
-        cl = get_authed_client()
-
-        @mock.patch.object(httplib2.Http, "request", mock_request)
-        def test_post_call():
-            cl.post("/hi", body=[1, 2, 3])
-            headers = {
-                "X-Auth-Token": "token",
-                "X-Auth-Project-Id": "project_id",
-                "Content-Type": "application/json",
-                'Accept': 'application/json',
-                "User-Agent": cl.USER_AGENT
-            }
-            mock_request.assert_called_with("http://example.com/hi", "POST",
-                                            headers=headers, body='[1, 2, 3]')
-
-        test_post_call()
-
-    def test_auth_failure(self):
+    @mock.patch('httplib2.Http.request')
+    def test_auth_failure(self, mock_request):
+        mock_request.return_value = (fake_response, fake_body)
         cl = get_client()
-
-        # response must not have x-server-management-url header
-        @mock.patch.object(httplib2.Http, "request", mock_request)
-        def test_auth_call():
-            self.assertRaises(exceptions.AuthorizationFailure, cl.authenticate)
-
-        test_auth_call()
+        self.assertRaises(exceptions.AuthorizationFailure, cl.authenticate)
