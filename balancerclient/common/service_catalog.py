@@ -1,5 +1,6 @@
 # Copyright 2011 OpenStack LLC.
 # Copyright 2011, Piston Cloud Computing, Inc.
+# Copyright 2011 Nebula, Inc.
 #
 # All Rights Reserved.
 #
@@ -15,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 from . import exceptions
 
 
@@ -25,51 +27,36 @@ class ServiceCatalog(object):
         self.catalog = resource_dict
 
     def get_token(self):
-        return self.catalog['access']['token']['id']
+        """Fetch token details fron service catalog"""
+        token = {'id': self.catalog['token']['id'],
+                'expires': self.catalog['token']['expires']}
+        try:
+            token['user_id'] = self.catalog['user']['id']
+            token['tenant_id'] = self.catalog['token']['tenant']['id']
+        except:
+            # just leave the tenant and user out if it doesn't exist
+            pass
+        return token
 
     def url_for(self, attr=None, filter_value=None,
-                    service_type=None, endpoint_type='publicURL',
-                    service_name=None, volume_service_name=None):
-        """Fetch the public URL from the Compute service for
-        a particular endpoint attribute. If none given, return
-        the first. See tests for sample service catalog."""
-        matching_endpoints = []
-        if 'endpoints' in self.catalog:
-            # We have a bastardized service catalog. Treat it special. :/
-            for endpoint in self.catalog['endpoints']:
-                if not filter_value or endpoint[attr] == filter_value:
-                    matching_endpoints.append(endpoint)
-            if not matching_endpoints:
-                raise exceptions.EndpointNotFound()
+                    service_type='identity', endpoint_type='publicURL'):
+        """Fetch an endpoint from the service catalog.
 
-        # We don't always get a service catalog back ...
-        if not 'serviceCatalog' in self.catalog['access']:
-            return None
+        Fetch the specified endpoint from the service catalog for
+        a particular endpoint attribute. If no attribute is given, return
+        the first endpoint of the specified type.
 
-        # Full catalog ...
-        catalog = self.catalog['access']['serviceCatalog']
+        See tests for a sample service catalog.
+        """
+        catalog = self.catalog.get('serviceCatalog', [])
 
         for service in catalog:
-            if service.get("type") != service_type:
-                continue
-
-            if (service_name and service_type == 'compute' and
-                    service.get('name') != service_name):
-                continue
-
-            if (volume_service_name and service_type == 'volume' and
-                    service.get('name') != volume_service_name):
+            if service['type'] != service_type:
                 continue
 
             endpoints = service['endpoints']
             for endpoint in endpoints:
                 if not filter_value or endpoint.get(attr) == filter_value:
-                    endpoint["serviceName"] = service.get("name")
-                    matching_endpoints.append(endpoint)
+                    return endpoint[endpoint_type]
 
-        if not matching_endpoints:
-            raise exceptions.EndpointNotFound()
-        elif len(matching_endpoints) > 1:
-            raise exceptions.AmbiguousEndpoints(endpoints=matching_endpoints)
-        else:
-            return matching_endpoints[0][endpoint_type]
+        raise exceptions.EndpointNotFound('Endpoint not found.')
