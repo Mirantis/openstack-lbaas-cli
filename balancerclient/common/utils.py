@@ -266,9 +266,9 @@ def slugify(value):
     return _slugify_hyphenate_re.sub('-', value)
 
 
-def http_log(_logger, args, kwargs, resp, body):
-        if not _logger.isEnabledFor(logging.DEBUG):
-            return
+def http_log(logger, args, kwargs, resp, body):
+#        if not logger.isEnabledFor(logging.DEBUG):
+#            return
 
         string_parts = ['curl -i']
         for element in args:
@@ -281,8 +281,8 @@ def http_log(_logger, args, kwargs, resp, body):
             header = ' -H "%s: %s"' % (element, kwargs['headers'][element])
             string_parts.append(header)
 
-        _logger.debug("REQ: %s\n" % "".join(string_parts))
+        logger.debug("REQ: %s\n" % "".join(string_parts))
         if 'body' in kwargs and kwargs['body']:
-            _logger.debug("REQ BODY: %s\n" % (kwargs['body']))
-        _logger.debug("RESP:%s\n", resp)
-        _logger.debug("RESP BODY:%s\n", body)
+            logger.debug("REQ BODY: %s\n" % (kwargs['body']))
+        logger.debug("RESP:%s\n", resp)
+        logger.debug("RESP BODY:%s\n", body)

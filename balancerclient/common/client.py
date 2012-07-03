@@ -14,8 +14,12 @@
 #    under the License.
 #
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
+"""
+OpenStack Client interface. Handles the REST calls and responses.
+"""
 
 import httplib2
+import copy
 import logging
 import os
 import urlparse
@@ -24,6 +28,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
 # Python 2.5 compat fix
 if not hasattr(urlparse, 'parse_qsl'):
     import cgi
@@ -31,131 +36,80 @@ if not hasattr(urlparse, 'parse_qsl'):
 
 
 from . import exceptions
-from . import utils
-from .service_catalog import ServiceCatalog
 
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class HTTPClient(httplib2.Http):
-    """Handles the REST calls and responses, include authn"""
 
     USER_AGENT = 'python-balancerclient'
 
-    def __init__(self, username=None, tenant_name=None,
-                 password=None, auth_url=None,
-                 token=None, region_name=None, timeout=None,
-                 endpoint_url=None, insecure=False,
-                 **kwargs):
+    def __init__(self, endpoint, token=None, timeout=600, insecure=False):
         super(HTTPClient, self).__init__(timeout=timeout)
-        self.username = username
-        self.tenant_name = tenant_name
-        self.password = password
-        self.auth_url = auth_url.rstrip('/') if auth_url else None
-        self.region_name = region_name
+        self.endpoint = endpoint
         self.auth_token = token
-        self.content_type = 'application/json'
-        self.endpoint_url = endpoint_url
+
         # httplib2 overrides
         self.force_exception_to_status_code = True
         self.disable_ssl_certificate_validation = insecure
 
-    def _cs_request(self, *args, **kwargs):
-        kargs = {}
-        kargs.setdefault('headers', kwargs.get('headers', {}))
-        kargs['headers']['User-Agent'] = self.USER_AGENT
+    def _http_request(self, url, method, **kwargs):
+        """ Send an http request with the specified characteristics.
 
-        if 'content_type' in kwargs:
-            kargs['headers']['Content-Type'] = kwargs['content_type']
-            kargs['headers']['Accept'] = kwargs['content_type']
-        else:
-            kargs['headers']['Content-Type'] = self.content_type
-            kargs['headers']['Accept'] = self.content_type
+        Wrapper around httplib2.Http.request to handle tasks such as
+        setting headers, JSON encoding/decoding, and error handling.
+        """
+        url = self.endpoint + url
 
-        if 'body' in kwargs:
-            kargs['body'] = kwargs['body']
+        # Copy the kwargs so we can reuse the original in case of redirects
+        kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
+        kwargs['headers'].setdefault('User-Agent', USER_AGENT)
+        if self.auth_token:
+            kwargs['headers'].setdefault('X-Auth-Token', self.auth_token)
 
-        resp, body = self.request(*args, **kargs)
+        resp, body = super(HTTPClient, self).request(url, method, **kwargs)
 
-        utils.http_log(_logger, args, kargs, resp, body)
-        status_code = self.get_status_code(resp)
-        if status_code != 200:
-            raise exception.from_response(resp, body)
+        if logger.isEnabledFor(logging.DEBUG):
+            utils.http_log(logger, (url, method,), kwargs, resp, body)
+
+        if resp.status in (301, 302, 305):
+            # Redirected. Reissue the request to the new location.
+            return self._http_request(resp['location'], method, **kwargs)
+
         return resp, body
 
-    def do_request(self, url, method, **kwargs):
-        if not self.endpoint_url:
-            self.authenticate()
+    def json_request(self, method, url, **kwargs):
+        kwargs.setdefault('headers', {})
+        kwargs['headers'].setdefault('Content-Type', 'application/json')
 
-        # Perform the request once. If we get a 401 back then it
-        # might be because the auth token expired, so try to
-        # re-authenticate and try again. If it still fails, bail.
-        try:
-            if self.auth_token:
-                kwargs.setdefault('headers', {})
-                kwargs['headers']['X-Auth-Token'] = self.auth_token
-            resp, body = self._cs_request(self.endpoint_url + url, method,
-                                          **kwargs)
-            return resp, body
-        except exceptions.Unauthorized as ex:
-            if not self.endpoint_url:
-                self.authenticate()
-                resp, body = self._cs_request(
-                    self.management_url + url, method, **kwargs)
-                return resp, body
-            else:
-                raise ex
+        if 'body' in kwargs:
+            kwargs['body'] = json.dumps(kwargs['body'])
 
-    def _extract_service_catalog(self, body):
-        """ Set the client's service catalog from the response data. """
-        try:
-            self.service_catalog = ServiceCatalog(body['access'])
-            token = self.service_catalog.get_token()
-            self.auth_token = token['id']
-            self.auth_tenant_id = token.get('tenant_id')
-            self.auth_user_id = token.get('user_id')
-        except KeyError:
-            raise exceptions.AuthorizationFailure()
-        self.endpoint_url = self.service_catalog.url_for(
-            attr='region', filter_value=self.region_name,
-            endpoint_type='adminURL')
+        resp, body = self._http_request(url, method, **kwargs)
 
-    def authenticate(self):
-        body = {'auth': {'passwordCredentials':
-                                               {'username': self.username,
-                                                'password': self.password},
-                         'tenantName': self.tenant_name}}
-
-        token_url = self.auth_url + "/tokens"
-
-        # Make sure we follow redirects when trying to reach Keystone
-        tmp_follow_all_redirects = self.follow_all_redirects
-        self.follow_all_redirects = True
-        try:
-            resp, body = self._cs_request(token_url, "POST",
-                                          body=json.dumps(body),
-                                          content_type="application/json")
-        finally:
-            self.follow_all_redirects = tmp_follow_all_redirects
-        status_code = self.get_status_code(resp)
-        if status_code != 200:
-            raise exceptions.Unauthorized(message=body)
         if body:
             try:
                 body = json.loads(body)
             except ValueError:
-                pass
+                logger.debug("Could not decode JSON from body: %s" % body)
         else:
+            logger.debug("No body was returned.")
             body = None
-        self._extract_service_catalog(body)
 
-    def get_status_code(self, response):
-        """
-        Returns the integer status code from the response, which
-        can be either a Webob.Response (used in testing) or httplib.Response
-        """
-        if hasattr(response, 'status_int'):
-            return response.status_int
-        else:
-            return response.status
+        if 400 <= resp.status < 600:
+            raise exceptions.from_response(resp, body)
+
+        return resp, body
+
+    def raw_request(self, method, url, **kwargs):
+        kwargs.setdefault('headers', {})
+        kwargs['headers'].setdefault('Content-Type',
+                                     'application/octet-stream')
+
+        resp, body = self._http_request(url, method, **kwargs)
+
+        if 400 <= resp.status < 600:
+            raise exceptions.from_response(resp, body)
+
+        return self._http_request(url, method, **kwargs)
