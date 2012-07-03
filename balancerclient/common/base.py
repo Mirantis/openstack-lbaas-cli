@@ -64,6 +64,16 @@ class Manager(object):
         if body:
             return self.resource_class(self, body[response_key])
 
+    def _create(self, url, body, response_key, return_raw=False):
+        resp, body = self.api.json_request('POST', url, body=body)
+        if return_raw:
+            return body[response_key]
+        return self.resource_class(self, body[response_key])
+
+    def _get(self, url, response_key):
+        resp, body = self.api.json_request('GET', url)
+        return self.resource_class(self, body[response_key])
+
 
 class Resource(object):
     """
