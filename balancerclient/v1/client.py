@@ -30,6 +30,6 @@ class Client(object):
     """
 
     def __init__(self, endpoint, token=None, timeout=600, **kwargs):
-        self.http_client = http.HTTPClient(
+        self.http_client = client.HTTPClient(
                 endpoint, token=token, timeout=timeout)
         self.devices = devices.DeviceManager(self)
