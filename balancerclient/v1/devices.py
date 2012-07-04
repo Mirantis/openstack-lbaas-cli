@@ -20,6 +20,7 @@ from balancerclient.common import base
 
 class Device(base.Resource):
     """Represent load balancer device instance."""
+
     def __repr__(self):
         return "<Device(%s)>" % self._info
 
@@ -41,8 +42,8 @@ class DeviceManager(base.Manager):
         body.update(extra)
         return self._create('/devices', body, 'devices')
 
-    def delete(self, device_id):
-        self._delete("/devices/%s" % device_id)
+    def delete(self, device):
+        self._delete("/devices/%s" % base.getid(device))
 
-    def get(self, device_id):
-        return self._get("/devices/%s" % device_id, 'devices')
+    def get(self, device):
+        return self._get("/devices/%s" % base.getid(device), 'devices')
