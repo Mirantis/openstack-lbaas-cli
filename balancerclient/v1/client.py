@@ -19,6 +19,7 @@ from balancerclient.common import client
 from . import devices
 from . import loadbalancers
 from . import nodes
+from . import probes
 
 
 class Client(object):
@@ -37,3 +38,4 @@ class Client(object):
         self.devices = devices.DeviceManager(self)
         self.loadbalancers = loadbalancer.LoadBalancerManager(self)
         self.nodes = nodes.NodeManager(self)
+        self.probes = probes.ProbeManager(self)

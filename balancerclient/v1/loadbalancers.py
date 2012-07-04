@@ -60,3 +60,6 @@ class LoadBalancerManager(base.Manager):
 
     def list_nodes(self, lb):
         return self.api.nodes.nodes_for_lb(lb)
+
+    def list_probes(self, lb):
+        return self.api.probes.probes_for_lb(lb)
