@@ -36,6 +36,6 @@ class Client(object):
         self.http_client = client.HTTPClient(
                 endpoint, token=token, timeout=timeout)
         self.devices = devices.DeviceManager(self)
-        self.loadbalancers = loadbalancer.LoadBalancerManager(self)
+        self.loadbalancers = loadbalancers.LoadBalancerManager(self)
         self.nodes = nodes.NodeManager(self)
         self.probes = probes.ProbeManager(self)
