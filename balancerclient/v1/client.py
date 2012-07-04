@@ -17,6 +17,8 @@
 
 from balancerclient.common import client
 from . import devices
+from . import loadbalancers
+from . import nodes
 
 
 class Client(object):
@@ -33,3 +35,5 @@ class Client(object):
         self.http_client = client.HTTPClient(
                 endpoint, token=token, timeout=timeout)
         self.devices = devices.DeviceManager(self)
+        self.loadbalancers = loadbalancer.LoadBalancerManager(self)
+        self.nodes = nodes.NodeManager(self)
