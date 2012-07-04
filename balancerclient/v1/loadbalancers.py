@@ -67,3 +67,6 @@ class LoadBalancerManager(base.Manager):
 
     def list_probes(self, lb):
         return self.api.probes.probes_for_lb(lb)
+
+    def list_stickies(self, lb):
+        return self.api.stickies.sticky_for_lb(lb)

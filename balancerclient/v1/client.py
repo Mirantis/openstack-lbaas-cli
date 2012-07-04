@@ -20,6 +20,7 @@ from . import devices
 from . import loadbalancers
 from . import nodes
 from . import probes
+from . import stickies
 
 
 class Client(object):
@@ -39,3 +40,4 @@ class Client(object):
         self.loadbalancers = loadbalancers.LoadBalancerManager(self)
         self.nodes = nodes.NodeManager(self)
         self.probes = probes.ProbeManager(self)
+        self.stickies = stickies.StickyManager(self)
