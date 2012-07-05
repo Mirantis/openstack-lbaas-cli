@@ -6,6 +6,7 @@ from balancerclient.common import client
 from balancerclient.v1.loadbalancers import LoadBalancerManager
 from balancerclient.v1.nodes import NodeManager
 from balancerclient.v1.devices import DeviceManager
+from balancerclient.v1.probes import ProbeManager
 
 
 class LoadBalancerManagerTest(unittest.TestCase):
@@ -171,3 +172,38 @@ class DeviceManagerTest(unittest.TestCase):
         expected = mock.call(self.devices, '/devices/fakeid', 'devices')
         self.assertTrue(mock_get.called)
         self.assertEqual(mock_get.mock_calls, [expected])
+
+
+class ProbeManagerTest(unittest.TestCase):
+    def setUp(self):
+        self.probes = ProbeManager(mock.Mock())
+        self.probe = mock.Mock(id='fakeid')
+        self.lb = mock.Mock(id='lbfakeid')
+
+    @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
+    def test_create(self, mock_create):
+        self.probes.create(self.lb, 'probe1', 'ICMP')
+        body = {'name': 'probe1',
+                'type': 'ICMP'}
+        expected = mock.call(self.probes,
+                             '/loadbalancers/lbfakeid/healthMonitoring', body,
+                             'healthMonitoring')
+        self.assertTrue(mock_create.called)
+        self.assertEqual(mock_create.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._delete', autospec=True)
+    def test_delete(self, mock_delete):
+        self.probes.delete(self.lb, self.probe)
+        expected = mock.call(self.probes,
+                             '/loadbalancers/lbfakeid/healthMonitoring/fakeid')
+        self.assertTrue(mock_delete.called)
+        self.assertEqual(mock_delete.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
+    def test_probes_for_lb(self, mock_list):
+        self.probes.probes_for_lb(self.lb)
+        expected = mock.call(self.probes,
+                             '/loadbalancers/lbfakeid/healthMonitoring',
+                             'healthMonitoring')
+        self.assertTrue(mock_list.called)
+        self.assertEqual(mock_list.mock_calls, [expected])
