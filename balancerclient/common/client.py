@@ -36,6 +36,7 @@ if not hasattr(urlparse, 'parse_qsl'):
 
 
 from . import exceptions
+from . import utils
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class HTTPClient(httplib2.Http):
 
         # Copy the kwargs so we can reuse the original in case of redirects
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
-        kwargs['headers'].setdefault('User-Agent', USER_AGENT)
+        kwargs['headers'].setdefault('User-Agent', self.USER_AGENT)
         if self.auth_token:
             kwargs['headers'].setdefault('X-Auth-Token', self.auth_token)
 
