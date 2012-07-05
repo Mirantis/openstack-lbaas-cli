@@ -33,7 +33,8 @@ class ProbeManager(base.Manager):
                 'type': type}
         body.update(extra)
         return self._create("/loadbalancers/%s/healthMonitoring" %
-                            (base.getid(lb),), 'healthMonitoring')
+                                (base.getid(lb),),
+                            body, 'healthMonitoring')
 
     def delete(self, lb, probe):
         self._delete("/loadbalancers/%s/healthMonitoring/%s" %
@@ -41,4 +42,5 @@ class ProbeManager(base.Manager):
 
     def probes_for_lb(self, lb):
         return self._list("/loadbalancers/%s/healthMonitoring" %
-                          (base.getid(lb),), 'healthMonitoring')
+                              (base.getid(lb),),
+                          'healthMonitoring')

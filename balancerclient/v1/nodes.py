@@ -30,15 +30,15 @@ class NodeManager(base.Manager):
 
     def create(self, lb, name, type, address, port, weight, status,
                **extra):
-        body = {'name': name,
-                'type': type,
-                'address': address,
-                'port': port,
-                'weight': weight,
-                'status': status}
+        body = {'node': {'name': name,
+                         'type': type,
+                         'address': address,
+                         'port': port,
+                         'weight': weight,
+                         'status': status}}
         body.update(extra)
         return self._create("/loadbalancers/%s/nodes" % (base.getid(lb),),
-                            'nodes')
+                            body, 'node')
 
     def update(self, lb, node,
                name=None, type=None, address=None, port=None, weight=None,
