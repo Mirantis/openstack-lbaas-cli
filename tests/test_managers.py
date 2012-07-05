@@ -3,11 +3,24 @@ from .utils import unittest
 import mock
 
 from balancerclient.common import client
+from balancerclient.v1.client import Client
 from balancerclient.v1.loadbalancers import LoadBalancerManager
 from balancerclient.v1.nodes import NodeManager
 from balancerclient.v1.devices import DeviceManager
 from balancerclient.v1.probes import ProbeManager
 from balancerclient.v1.stickies import StickyManager
+
+
+class TestClient(unittest.TestCase):
+    @mock.patch('httplib2.Http', autospec=True)
+    def test_client(self, mock_http):
+        client = Client(endpoint='http://localhost:8181/fakes',
+                        token='faketoken')
+        self.assertTrue(hasattr(client, 'devices'))
+        self.assertTrue(hasattr(client, 'loadbalancers'))
+        self.assertTrue(hasattr(client, 'nodes'))
+        self.assertTrue(hasattr(client, 'probes'))
+        self.assertTrue(hasattr(client, 'stickies'))
 
 
 class LoadBalancerManagerTest(unittest.TestCase):
