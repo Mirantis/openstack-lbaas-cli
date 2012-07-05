@@ -23,7 +23,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(hasattr(client, 'stickies'))
 
 
-class LoadBalancerManagerTest(unittest.TestCase):
+class TestLoadBalancerManager(unittest.TestCase):
     def setUp(self):
         self.api = mock.Mock()
         self.lbs = LoadBalancerManager(self.api)
@@ -102,7 +102,7 @@ class LoadBalancerManagerTest(unittest.TestCase):
                          [mock.call(self.lb)])
 
 
-class NodeManagerTest(unittest.TestCase):
+class TestNodeManager(unittest.TestCase):
     def setUp(self):
         self.nodes = NodeManager(mock.Mock())
         self.node = mock.Mock(id='fakeid')
@@ -165,7 +165,7 @@ class NodeManagerTest(unittest.TestCase):
         self.assertEqual(mock_list.mock_calls, [expected])
 
 
-class DeviceManagerTest(unittest.TestCase):
+class TestDeviceManager(unittest.TestCase):
     def setUp(self):
         self.devices = DeviceManager(mock.Mock())
         self.device = mock.Mock(id='fakeid')
@@ -207,7 +207,7 @@ class DeviceManagerTest(unittest.TestCase):
         self.assertEqual(mock_get.mock_calls, [expected])
 
 
-class ProbeManagerTest(unittest.TestCase):
+class TestProbeManager(unittest.TestCase):
     def setUp(self):
         self.probes = ProbeManager(mock.Mock())
         self.probe = mock.Mock(id='fakeid')
@@ -242,7 +242,7 @@ class ProbeManagerTest(unittest.TestCase):
         self.assertEqual(mock_list.mock_calls, [expected])
 
 
-class StickyManagerTest(unittest.TestCase):
+class TestStickyManager(unittest.TestCase):
     def setUp(self):
         self.stickies = StickyManager(mock.Mock())
         self.sticky = mock.Mock(id='fakeid')

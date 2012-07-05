@@ -5,7 +5,7 @@ import mock
 from balancerclient.common import client
 
 
-class HTTPClientTest(unittest.TestCase):
+class TestHTTPClient(unittest.TestCase):
     def setUp(self):
         self.client = client.HTTPClient('http://localhost:8181',
                                         token='faketoken')
