@@ -4,6 +4,7 @@ import mock
 
 from balancerclient.common import client
 
+
 class HTTPClientTest(unittest.TestCase):
     def setUp(self):
         self.client = client.HTTPClient('http://localhost:8181',
@@ -13,9 +14,10 @@ class HTTPClientTest(unittest.TestCase):
     def test_http_request_default_headers(self, mock_req):
         mock_req.return_value = (mock.Mock(status=200), 'fakebody')
         resp, body = self.client._http_request('/fakes', 'GET')
+        headers = {'User-Agent': 'python-balancerclient',
+                   'X-Auth-Token': 'faketoken'}
         expected = mock.call(self.client, 'http://localhost:8181/fakes',
-                             'GET', headers={'User-Agent': 'python-balancerclient',
-                                             'X-Auth-Token': 'faketoken'})
+                             'GET', headers=headers)
         self.assertTrue(mock_req.called)
         self.assertEqual(mock_req.mock_calls, [expected])
         self.assertEqual(body, 'fakebody')
@@ -25,10 +27,11 @@ class HTTPClientTest(unittest.TestCase):
         mock_req.return_value = (mock.Mock(status=200), 'fakebody')
         resp, body = self.client._http_request('/fakes', 'GET',
                              headers={'Content-Type': 'application/json'})
+        headers = {'User-Agent': 'python-balancerclient',
+                   'X-Auth-Token': 'faketoken',
+                   'Content-Type': 'application/json'}
         expected = mock.call(self.client, 'http://localhost:8181/fakes',
-                             'GET', headers={'User-Agent': 'python-balancerclient',
-                                             'X-Auth-Token': 'faketoken',
-                                             'Content-Type': 'application/json'})
+                             'GET', headers=headers)
         self.assertTrue(mock_req.called)
         self.assertEqual(mock_req.mock_calls, [expected])
         self.assertEqual(body, 'fakebody')
