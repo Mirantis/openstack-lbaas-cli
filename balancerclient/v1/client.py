@@ -36,8 +36,9 @@ class Client(object):
     def __init__(self, endpoint, token=None, timeout=600, **kwargs):
         self.http_client = client.HTTPClient(
                 endpoint, token=token, timeout=timeout)
-        self.devices = devices.DeviceManager(self)
-        self.loadbalancers = loadbalancers.LoadBalancerManager(self)
-        self.nodes = nodes.NodeManager(self)
-        self.probes = probes.ProbeManager(self)
-        self.stickies = stickies.StickyManager(self)
+        self.devices = devices.DeviceManager(self.http_client)
+        self.loadbalancers = loadbalancers.LoadBalancerManager(
+                                    self.http_client)
+        self.nodes = nodes.NodeManager(self.http_client)
+        self.probes = probes.ProbeManager(self.http_client)
+        self.stickies = stickies.StickyManager(self.http_client)
