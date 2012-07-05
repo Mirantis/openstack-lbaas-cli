@@ -59,7 +59,7 @@ class LoadBalancerManager(base.Manager):
         if protocol:
             body['protocol'] = protocol
         body.update(extra)
-        return self._update("/loadbalancers/%s" % (base.getid(lb),),
+        return self._update("/loadbalancers/%s" % (base.getid(lb),), body,
                             'loadbalancers')
 
     def list_nodes(self, lb):
