@@ -7,11 +7,13 @@ from balancerclient.v1.loadbalancers import LoadBalancerManager
 from balancerclient.v1.nodes import NodeManager
 from balancerclient.v1.devices import DeviceManager
 from balancerclient.v1.probes import ProbeManager
+from balancerclient.v1.stickies import StickyManager
 
 
 class LoadBalancerManagerTest(unittest.TestCase):
     def setUp(self):
-        self.lbs = LoadBalancerManager(mock.Mock())
+        self.api = mock.Mock()
+        self.lbs = LoadBalancerManager(self.api)
         self.lb = mock.Mock(id='fakeid')
 
     @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
@@ -67,6 +69,24 @@ class LoadBalancerManagerTest(unittest.TestCase):
                              'loadbalancers')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
+
+    def test_list_nodes(self):
+        self.lbs.list_nodes(self.lb)
+        self.assertTrue(self.api.nodes.nodes_for_lb.called)
+        self.assertEqual(self.api.nodes.nodes_for_lb.mock_calls,
+                         [mock.call(self.lb)])
+
+    def test_list_probes(self):
+        self.lbs.list_probes(self.lb)
+        self.assertTrue(self.api.probes.probes_for_lb.called)
+        self.assertEqual(self.api.probes.probes_for_lb.mock_calls,
+                         [mock.call(self.lb)])
+
+    def test_list_stickies(self):
+        self.lbs.list_stickies(self.lb)
+        self.assertTrue(self.api.stickies.stickies_for_lb.called)
+        self.assertEqual(self.api.stickies.stickies_for_lb.mock_calls,
+                         [mock.call(self.lb)])
 
 
 class NodeManagerTest(unittest.TestCase):
@@ -205,5 +225,41 @@ class ProbeManagerTest(unittest.TestCase):
         expected = mock.call(self.probes,
                              '/loadbalancers/lbfakeid/healthMonitoring',
                              'healthMonitoring')
+        self.assertTrue(mock_list.called)
+        self.assertEqual(mock_list.mock_calls, [expected])
+
+
+class StickyManagerTest(unittest.TestCase):
+    def setUp(self):
+        self.stickies = StickyManager(mock.Mock())
+        self.sticky = mock.Mock(id='fakeid')
+        self.lb = mock.Mock(id='lbfakeid')
+
+    @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
+    def test_create(self, mock_create):
+        self.stickies.create(self.lb, 'sticky1', 'HTTP')
+        body = {'name': 'sticky1',
+                'type': 'HTTP'}
+        expected = mock.call(self.stickies,
+                             '/loadbalancers/lbfakeid/sessionPersistence',
+                             body,
+                             'sessionPersistence')
+        self.assertTrue(mock_create.called)
+        self.assertEqual(mock_create.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._delete', autospec=True)
+    def test_delete(self, mock_delete):
+        self.stickies.delete(self.lb, self.sticky)
+        expected = mock.call(self.stickies,
+                        '/loadbalancers/lbfakeid/sessionPersistence/fakeid')
+        self.assertTrue(mock_delete.called)
+        self.assertEqual(mock_delete.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
+    def test_sticky_for_lb(self, mock_list):
+        self.stickies.stickies_for_lb(self.lb)
+        expected = mock.call(self.stickies,
+                             '/loadbalancers/lbfakeid/sessionPersistence',
+                             'sessionPersistence')
         self.assertTrue(mock_list.called)
         self.assertEqual(mock_list.mock_calls, [expected])
