@@ -5,6 +5,7 @@ import mock
 from balancerclient.common import client
 from balancerclient.v1.loadbalancers import LoadBalancerManager
 from balancerclient.v1.nodes import NodeManager
+from balancerclient.v1.devices import DeviceManager
 
 
 class LoadBalancerManagerTest(unittest.TestCase):
@@ -128,3 +129,45 @@ class NodeManagerTest(unittest.TestCase):
                              'nodes')
         self.assertTrue(mock_list.called)
         self.assertEqual(mock_list.mock_calls, [expected])
+
+
+class DeviceManagerTest(unittest.TestCase):
+    def setUp(self):
+        self.devices = DeviceManager(mock.Mock())
+        self.device = mock.Mock(id='fakeid')
+
+    @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
+    def test_list(self, mock_list):
+        self.devices.list()
+        expected = mock.call(self.devices, '/devices', 'devices')
+        self.assertTrue(mock_list.called)
+        self.assertEqual(mock_list.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
+    def test_create(self, mock_create):
+        self.devices.create('device1', 'FAKE', '1.0.0', '10.0.0.1', 22,
+                            'fakeuser', 'fakepassword')
+        body = {'name': 'device1',
+                'type': 'FAKE',
+                'version': '1.0.0',
+                'ip': '10.0.0.1',
+                'port': 22,
+                'user': 'fakeuser',
+                'password': 'fakepassword'}
+        expected = mock.call(self.devices, '/devices', body, 'devices')
+        self.assertTrue(mock_create.called)
+        self.assertEqual(mock_create.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._delete', autospec=True)
+    def test_delete(self, mock_delete):
+        self.devices.delete(self.device)
+        expected = mock.call(self.devices, '/devices/fakeid')
+        self.assertTrue(mock_delete.called)
+        self.assertEqual(mock_delete.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
+    def test_get(self, mock_get):
+        self.devices.get(self.device)
+        expected = mock.call(self.devices, '/devices/fakeid', 'devices')
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
