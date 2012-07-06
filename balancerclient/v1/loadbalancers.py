@@ -59,7 +59,7 @@ class LoadBalancerManager(base.Manager):
         if protocol:
             body['protocol'] = protocol
         body.update(extra)
-        return self._update("/loadbalancers/%s" % (base.getid(lb),),
+        return self._update("/loadbalancers/%s" % (base.getid(lb),), body,
                             'loadbalancers')
 
     def list_nodes(self, lb):
@@ -69,4 +69,4 @@ class LoadBalancerManager(base.Manager):
         return self.api.probes.probes_for_lb(lb)
 
     def list_stickies(self, lb):
-        return self.api.stickies.sticky_for_lb(lb)
+        return self.api.stickies.stickies_for_lb(lb)

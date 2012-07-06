@@ -57,11 +57,12 @@ class NodeManager(base.Manager):
         body.update(extra)
         return self._update("/loadbalancers/%s/nodes/%s" % (base.getid(lb),
                                                             base.getid(node)),
-                            'nodes')
+                            body, 'nodes')
 
     def update_status(self, lb, node, status):
-        return self._udpate("/loadbalancers/%s/nodes/%s/%s" %
-                            (base.getid(lb), base.getid(node), status))
+        return self._update("/loadbalancers/%s/nodes/%s/%s" %
+                                (base.getid(lb), base.getid(node), status),
+                            'loadbalancers')
 
     def delete(self, lb, node):
         self._delete("/loadbalancers/%s/nodes/%s" % (base.getid(lb),

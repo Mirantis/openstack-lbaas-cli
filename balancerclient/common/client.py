@@ -113,4 +113,4 @@ class HTTPClient(httplib2.Http):
         if 400 <= resp.status < 600:
             raise exceptions.from_response(resp, body)
 
-        return self._http_request(url, method, **kwargs)
+        return resp, body
