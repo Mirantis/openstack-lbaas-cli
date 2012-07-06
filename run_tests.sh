@@ -58,7 +58,7 @@ done
 
 # If enabled, tell nose to collect coverage data
 if [ $coverage -eq 1 ]; then
-    noseopts="$noseopts --with-coverage --cover-package=balancerclient"
+    noseopts="$noseopts --with-coverage --cover-package=balancerclient --cover-inclusive"
 fi
 
 if [ $no_site_packages -eq 1 ]; then
