@@ -22,18 +22,7 @@ import httplib2
 import copy
 import logging
 import os
-import urlparse
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
-# Python 2.5 compat fix
-if not hasattr(urlparse, 'parse_qsl'):
-    import cgi
-    urlparse.parse_qsl = cgi.parse_qsl
-
+import json
 
 from . import exceptions
 from . import utils

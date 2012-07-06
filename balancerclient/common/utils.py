@@ -3,7 +3,6 @@ import re
 import sys
 import uuid
 import logging
-
 import prettytable
 
 from . import exceptions
