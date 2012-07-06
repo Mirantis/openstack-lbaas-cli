@@ -1,5 +1,4 @@
-from .utils import unittest
-
+import unittest2
 import mock
 
 from balancerclient.common import client
@@ -11,7 +10,7 @@ from balancerclient.v1.probes import ProbeManager
 from balancerclient.v1.stickies import StickyManager
 
 
-class TestClient(unittest.TestCase):
+class TestClient(unittest2.TestCase):
     @mock.patch('httplib2.Http', autospec=True)
     def test_client(self, mock_http):
         client = Client(endpoint='http://localhost:8181/fakes',
@@ -23,7 +22,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(hasattr(client, 'stickies'))
 
 
-class TestLoadBalancerManager(unittest.TestCase):
+class TestLoadBalancerManager(unittest2.TestCase):
     def setUp(self):
         self.api = mock.Mock()
         self.lbs = LoadBalancerManager(self.api)
@@ -102,7 +101,7 @@ class TestLoadBalancerManager(unittest.TestCase):
                          [mock.call(self.lb)])
 
 
-class TestNodeManager(unittest.TestCase):
+class TestNodeManager(unittest2.TestCase):
     def setUp(self):
         self.nodes = NodeManager(mock.Mock())
         self.node = mock.Mock(id='fakeid')
@@ -165,7 +164,7 @@ class TestNodeManager(unittest.TestCase):
         self.assertEqual(mock_list.mock_calls, [expected])
 
 
-class TestDeviceManager(unittest.TestCase):
+class TestDeviceManager(unittest2.TestCase):
     def setUp(self):
         self.devices = DeviceManager(mock.Mock())
         self.device = mock.Mock(id='fakeid')
@@ -207,7 +206,7 @@ class TestDeviceManager(unittest.TestCase):
         self.assertEqual(mock_get.mock_calls, [expected])
 
 
-class TestProbeManager(unittest.TestCase):
+class TestProbeManager(unittest2.TestCase):
     def setUp(self):
         self.probes = ProbeManager(mock.Mock())
         self.probe = mock.Mock(id='fakeid')
@@ -242,7 +241,7 @@ class TestProbeManager(unittest.TestCase):
         self.assertEqual(mock_list.mock_calls, [expected])
 
 
-class TestStickyManager(unittest.TestCase):
+class TestStickyManager(unittest2.TestCase):
     def setUp(self):
         self.stickies = StickyManager(mock.Mock())
         self.sticky = mock.Mock(id='fakeid')

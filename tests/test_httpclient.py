@@ -1,11 +1,10 @@
-from .utils import unittest
-
+import unittest2
 import mock
 
 from balancerclient.common import client
 
 
-class TestHTTPClient(unittest.TestCase):
+class TestHTTPClient(unittest2.TestCase):
     def setUp(self):
         self.client = client.HTTPClient('http://localhost:8181',
                                         token='faketoken')

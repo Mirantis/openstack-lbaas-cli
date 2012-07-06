@@ -1,15 +1,15 @@
-from .utils import unittest
-
+import unittest2
 import mock
 
 from balancerclient.common.client import HTTPClient
-from balancerclient.common.base import Manager, Resource
+from balancerclient.common import base
 
 
 class TestManager(unittest.TestCase):
+class TestManager(unittest2.TestCase):
     def setUp(self):
         self.api = mock.Mock(spec=HTTPClient)
-        self.manager = Manager(self.api)
+        self.manager = base.Manager(self.api)
         self.patcher = mock.patch.object(self.manager, 'resource_class')
         self.resource = self.patcher.start()
 
