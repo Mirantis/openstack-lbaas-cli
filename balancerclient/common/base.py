@@ -39,7 +39,7 @@ class Manager(object):
         self.api = api
 
     def _list(self, url, response_key, obj_class=None, body=None):
-        resp, body = self.api.json_request('GET', url)
+        resp, body = self.api.json_request('GET', url, body=body)
 
         if obj_class is None:
             obj_class = self.resource_class

@@ -42,13 +42,13 @@ class TestManager(unittest2.TestCase):
         self.api.json_request.return_value = (mock.Mock(),
                                               {'data': [{'id': 'fakeid1'},
                                                         {'id': 'fakeid2'}]})
-        objs = self.manager._list('/fakes', 'data')
+        objs = self.manager._list('/fakes', 'data', body='fakebody')
         expected = [mock.call(self.manager, {'id': 'fakeid1'}, loaded=True),
                     mock.call(self.manager, {'id': 'fakeid2'}, loaded=True)]
         self.assertTrue(self.api.json_request.called)
         self.assertTrue(self.resource.called)
         self.assertEqual(self.api.json_request.mock_calls,
-                         [mock.call('GET', '/fakes')])
+                         [mock.call('GET', '/fakes', body='fakebody')])
         self.assertEqual(self.resource.mock_calls, expected)
 
     def test_delete(self):
