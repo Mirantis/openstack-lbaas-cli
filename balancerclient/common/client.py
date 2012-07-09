@@ -26,6 +26,7 @@ import json
 
 from . import exceptions
 from . import utils
+from .service_catalog import ServiceCatalog
 
 
 logger = logging.getLogger(__name__)
@@ -35,24 +36,28 @@ class HTTPClient(httplib2.Http):
 
     USER_AGENT = 'python-balancerclient'
 
-    def __init__(self, endpoint, token=None, timeout=600, insecure=False):
+    def __init__(self, endpoint=None, token=None, username=None,
+                 password=None, tenant_name=None, region_name=None,
+                 auth_url=None, auth_tenant_id=None, timeout=600,
+                 insecure=False):
         super(HTTPClient, self).__init__(timeout=timeout)
         self.endpoint = endpoint
         self.auth_token = token
-
-        # httplib2 overrides
+        self.auth_url = auth_url
+        self.auth_tenant_id = auth_tenant_id
+        self.username = username
+        self.password = password
+        self.tenant_name = tenant_name
+        self.region_name = region_name
         self.force_exception_to_status_code = True
         self.disable_ssl_certificate_validation = insecure
+        if self.endpoint is None:
+            self.authenticate()
 
     def _http_request(self, url, method, **kwargs):
         """ Send an http request with the specified characteristics.
-
-        Wrapper around httplib2.Http.request to handle tasks such as
-        setting headers, JSON encoding/decoding, and error handling.
         """
-        url = self.endpoint + url
 
-        # Copy the kwargs so we can reuse the original in case of redirects
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('User-Agent', self.USER_AGENT)
         if self.auth_token:
@@ -64,16 +69,19 @@ class HTTPClient(httplib2.Http):
             utils.http_log(logger, (url, method,), kwargs, resp, body)
 
         if resp.status in (301, 302, 305):
-            # Redirected. Reissue the request to the new location.
             return self._http_request(resp['location'], method, **kwargs)
 
         return resp, body
 
-    def json_request(self, method, url, **kwargs):
+    def _json_request(self, method, url, **kwargs):
+        """ Wrapper around _http_request to handle setting headers,
+            JSON enconding/decoding and error handling.
+        """
+
         kwargs.setdefault('headers', {})
         kwargs['headers'].setdefault('Content-Type', 'application/json')
 
-        if 'body' in kwargs:
+        if 'body' in kwargs and kwargs['body'] is not None:
             kwargs['body'] = json.dumps(kwargs['body'])
 
         resp, body = self._http_request(url, method, **kwargs)
@@ -93,6 +101,8 @@ class HTTPClient(httplib2.Http):
         return resp, body
 
     def raw_request(self, method, url, **kwargs):
+        url = self.endpoint + url
+
         kwargs.setdefault('headers', {})
         kwargs['headers'].setdefault('Content-Type',
                                      'application/octet-stream')
@@ -103,3 +113,33 @@ class HTTPClient(httplib2.Http):
             raise exceptions.from_response(resp, body)
 
         return resp, body
+
+    def json_request(self, method, url, **kwargs):
+        url = self.endpoint + url
+        resp, body = self._json_request(method, url, **kwargs)
+        return resp, body
+
+    def authenticate(self):
+        token_url = self.auth_url + "/tokens"
+        body = {'auth': {'passwordCredentials': {'username': self.username,
+                                                 'password': self.password},
+                         'tenantName': self.tenant_name}}
+
+        tmp_follow_all_redirects = self.follow_all_redirects
+        self.follow_all_redirects = True
+        try:
+            resp, body = self._json_request('POST', token_url, body=body)
+        finally:
+            self.follow_all_redirects = tmp_follow_all_redirects
+
+        try:
+            self.service_catalog = ServiceCatalog(body['access'])
+            token = self.service_catalog.get_token()
+            self.auth_token = token['id']
+            self.auth_tenant_id = token['tenant_id']
+        except KeyError:
+            logger.exception("Parse service catalog failed.")
+            raise exceptions.AuthorizationFailure()
+
+        self.endpoint = self.service_catalog.url_for(attr='region',
+                                    filter_value=self.region_name)
