@@ -33,9 +33,8 @@ class Client(object):
                             http requests. (optional)
     """
 
-    def __init__(self, endpoint, token=None, timeout=600, **kwargs):
-        self.http_client = client.HTTPClient(
-                endpoint, token=token, timeout=timeout)
+    def __init__(self, **kwargs):
+        self.http_client = client.HTTPClient(**kwargs)
         self.devices = devices.DeviceManager(self.http_client)
         self.loadbalancers = loadbalancers.LoadBalancerManager(
                                     self.http_client)
