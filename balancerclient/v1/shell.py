@@ -128,14 +128,14 @@ def do_lb_delete(cl, args):
 # Nodes
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_node_list(cl, args):
     nodes = cl.nodes.nodes_for_lb(args.lbid)
     utils.print_list(nodes, ('id', 'name', 'type', 'address', 'port',
                              'weight'))
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID to display')
 def do_node_show(cl, args):
     node = cl.nodes.get(args.lbid, args.id)
@@ -150,7 +150,7 @@ def do_node_show(cl, args):
            help='Node address')
 @utils.arg('--port', metavar='<port>', required=True, help='Node port')
 @utils.arg('--weight', metavar='<weight>', required=True, help='Node weight')
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_node_create(cl, args):
@@ -159,8 +159,6 @@ def do_node_create(cl, args):
     utils.print_dict(node._info)
 
 
-@utils.arg('--lb-id', metavar='<lb-id>', dest='lbid',
-           desthelp='LoadBalancer ID')
 @utils.arg('--name', metavar='<device-name>', required=True,
            help='Desired new node name')
 @utils.arg('--type', metavar='<type>', required=True,
@@ -171,10 +169,10 @@ def do_node_create(cl, args):
            help='Desired new node port')
 @utils.arg('--weight', metavar='<weight>', required=True,
            help='Desired new node weight')
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
-@utils.arg('id', metavar='<node-id>', help='Node ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+@utils.arg('id', metavar='<node-id>', help='Node ID')
 def do_node_update(cl, args):
     kwargs = extra_args(args.extra)
     if args.name:
@@ -199,7 +197,7 @@ def do_node_update(cl, args):
         print 'Unable to update loadbalancer: %s' % e
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID')
 def do_node_delete(cl, args):
     cl.nodes.delete(args.lbid, args.id)
@@ -208,13 +206,13 @@ def do_node_delete(cl, args):
 # Probes
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_list(cl, args):
     probes = cl.probes.probes_for_lb(args.lbid)
     utils.print_list(probes, ('id', 'name', 'type'))
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID to display')
 def do_probe_show(cl, args):
     probe = cl.probes.get(args.lbid, args.id)
@@ -224,16 +222,16 @@ def do_probe_show(cl, args):
 @utils.arg('--name', metavar='<probe-name>', required=True,
            help='New probe name')
 @utils.arg('--type', metavar='<type>', required=True, help='Type of the probe')
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_create(cl, args):
     probe = cl.probes.create(args.lbid, args.name, args.type,
                              **extra_args(args.extra))
     utils.print_dict(probe._info)
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID')
 def do_probe_delete(cl, args):
     cl.probes.delete(args.lbid, args.id)
@@ -242,13 +240,13 @@ def do_probe_delete(cl, args):
 # Stickies
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_sticky_list(cl, args):
     stickies = cl.stickies.stickies_for_lb(args.lbid)
     utils.print_list(stickies, ('id', 'name', 'type'))
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID to display')
 def do_sticky_show(cl, args):
     sticky = cl.stickies.get(args.lbid, args.id)
@@ -259,7 +257,7 @@ def do_sticky_show(cl, args):
            help='New sticky name')
 @utils.arg('--type', metavar='<type>', required=True,
            help='Type of the sticky')
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_sticky_create(cl, args):
@@ -268,7 +266,7 @@ def do_sticky_create(cl, args):
     utils.print_dict(sticky._info)
 
 
-@utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
 def do_sticky_delete(cl, args):
     cl.stickies.delete(args.lbid, args.id)
