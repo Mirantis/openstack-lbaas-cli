@@ -130,7 +130,7 @@ def do_lb_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_node_list(cl, args):
-    nodes = cl.nodes.nodes_for_lb(args.lbid)
+    nodes = cl.nodes.nodes_for_lb(args.lb_id)
     utils.print_list(nodes, ('id', 'name', 'type', 'address', 'port',
                              'weight'))
 
@@ -138,7 +138,7 @@ def do_node_list(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID to display')
 def do_node_show(cl, args):
-    node = cl.nodes.get(args.lbid, args.id)
+    node = cl.nodes.get(args.lb_id, args.id)
     utils.print_dict(node._info)
 
 
@@ -154,7 +154,7 @@ def do_node_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_node_create(cl, args):
-    node = cl.nodes.create(args.lbid, args.name, args.type, args.address,
+    node = cl.nodes.create(args.lb_id, args.name, args.type, args.address,
                            args.port, args.weight, **extra_args(args.extra))
     utils.print_dict(node._info)
 
@@ -200,7 +200,7 @@ def do_node_update(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID')
 def do_node_delete(cl, args):
-    cl.nodes.delete(args.lbid, args.id)
+    cl.nodes.delete(args.lb_id, args.id)
 
 
 # Probes
@@ -208,14 +208,14 @@ def do_node_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_list(cl, args):
-    probes = cl.probes.probes_for_lb(args.lbid)
+    probes = cl.probes.probes_for_lb(args.lb_id)
     utils.print_list(probes, ('id', 'name', 'type'))
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID to display')
 def do_probe_show(cl, args):
-    probe = cl.probes.get(args.lbid, args.id)
+    probe = cl.probes.get(args.lb_id, args.id)
     utils.print_dict(probe._info)
 
 
@@ -226,7 +226,7 @@ def do_probe_show(cl, args):
             help='Extra properties')
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_create(cl, args):
-    probe = cl.probes.create(args.lbid, args.name, args.type,
+    probe = cl.probes.create(args.lb_id, args.name, args.type,
                              **extra_args(args.extra))
     utils.print_dict(probe._info)
 
@@ -234,7 +234,7 @@ def do_probe_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID')
 def do_probe_delete(cl, args):
-    cl.probes.delete(args.lbid, args.id)
+    cl.probes.delete(args.lb_id, args.id)
 
 
 # Stickies
@@ -242,14 +242,14 @@ def do_probe_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_sticky_list(cl, args):
-    stickies = cl.stickies.stickies_for_lb(args.lbid)
+    stickies = cl.stickies.stickies_for_lb(args.lb_id)
     utils.print_list(stickies, ('id', 'name', 'type'))
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID to display')
 def do_sticky_show(cl, args):
-    sticky = cl.stickies.get(args.lbid, args.id)
+    sticky = cl.stickies.get(args.lb_id, args.id)
     utils.print_dict(sticky._info)
 
 
@@ -261,7 +261,7 @@ def do_sticky_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_sticky_create(cl, args):
-    sticky = cl.stickies.create(args.lbid, args.name, args.type,
+    sticky = cl.stickies.create(args.lb_id, args.name, args.type,
                                 **extra_args(args.extra))
     utils.print_dict(sticky._info)
 
@@ -269,4 +269,4 @@ def do_sticky_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
 def do_sticky_delete(cl, args):
-    cl.stickies.delete(args.lbid, args.id)
+    cl.stickies.delete(args.lb_id, args.id)
