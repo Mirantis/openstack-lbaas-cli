@@ -21,7 +21,6 @@ OpenStack Client interface. Handles the REST calls and responses.
 import httplib2
 import copy
 import logging
-import os
 import json
 
 from . import exceptions
@@ -37,9 +36,9 @@ class HTTPClient(httplib2.Http):
     USER_AGENT = 'python-balancerclient'
 
     def __init__(self, endpoint=None, token=None, username=None,
-                 password=None, tenant_name=None, region_name=None,
-                 auth_url=None, auth_tenant_id=None, timeout=600,
-                 insecure=False):
+                 password=None, tenant_name=None, tenant_id=None,
+                 region_name=None, auth_url=None, auth_tenant_id=None,
+                 timeout=600, insecure=False):
         super(HTTPClient, self).__init__(timeout=timeout)
         self.endpoint = endpoint
         self.auth_token = token
@@ -48,6 +47,7 @@ class HTTPClient(httplib2.Http):
         self.username = username
         self.password = password
         self.tenant_name = tenant_name
+        self.tenant_id = tenant_id
         self.region_name = region_name
         self.force_exception_to_status_code = True
         self.disable_ssl_certificate_validation = insecure
@@ -122,8 +122,11 @@ class HTTPClient(httplib2.Http):
     def authenticate(self):
         token_url = self.auth_url + "/tokens"
         body = {'auth': {'passwordCredentials': {'username': self.username,
-                                                 'password': self.password},
-                         'tenantName': self.tenant_name}}
+                                                 'password': self.password}}}
+        if self.tenant_id:
+            body['auth']['tenantId'] = self.tenant_id
+        elif self.tenant_name:
+            body['auth']['tenantName'] = self.tenant_name
 
         tmp_follow_all_redirects = self.follow_all_redirects
         self.follow_all_redirects = True

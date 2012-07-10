@@ -195,7 +195,7 @@ class TestAuthHttpClient(unittest2.TestCase):
         self.patcher1.stop()
         self.patcher2.stop()
 
-    def test_authenticate(self):
+    def test_authenticate_tenant_name(self):
         self.get_token.return_value = {'id': 'fakeid',
                                        'tenant_id': 'faketenantid'}
         self.url_for.return_value = 'http://localhost:8181'
@@ -207,6 +207,30 @@ class TestAuthHttpClient(unittest2.TestCase):
                                                 {'username': 'fakeuser',
                                                 'password': 'fakepass'},
                                             'tenantName': 'fake'}})
+        self.assertTrue(self.mock_json_request.called)
+        self.assertTrue(self.mock_service_catalog.called)
+        self.assertTrue(self.get_token.called)
+        self.assertTrue(self.url_for.called)
+        self.assertEqual(self.mock_json_request.mock_calls, [expected])
+        self.assertEqual(self.mock_service_catalog.mock_calls,
+                         [mock.call('fakecatalog'),
+                          mock.call().get_token(),
+                          mock.call().url_for(attr='region',
+                                              filter_value='fakeregion')])
+        self.assertEqual(cl.endpoint, 'http://localhost:8181')
+
+    def test_authenticate_tenant_id(self):
+        self.get_token.return_value = {'id': 'fakeid',
+                                       'tenant_id': 'faketenantid'}
+        self.url_for.return_value = 'http://localhost:8181'
+        cl = client.HTTPClient(username='fakeuser', password='fakepass',
+                               tenant_id='fakeid', auth_url='http://fakes',
+                               region_name='fakeregion')
+        expected = mock.call(cl, 'POST', 'http://fakes/tokens',
+                             body={'auth': {'passwordCredentials':
+                                                {'username': 'fakeuser',
+                                                'password': 'fakepass'},
+                                            'tenantId': 'fakeid'}})
         self.assertTrue(self.mock_json_request.called)
         self.assertTrue(self.mock_service_catalog.called)
         self.assertTrue(self.get_token.called)
