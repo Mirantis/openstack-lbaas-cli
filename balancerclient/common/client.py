@@ -21,7 +21,6 @@ OpenStack Client interface. Handles the REST calls and responses.
 import httplib2
 import copy
 import logging
-import os
 import json
 
 from . import exceptions
