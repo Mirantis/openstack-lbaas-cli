@@ -42,7 +42,7 @@ def do_device_show(cl, args):
 
 @utils.arg('--name', metavar='<device-name>', required=True,
            help='New device name')
-@utils.arg('--type', metavar='<type>', requires=True,
+@utils.arg('--type', metavar='<type>', required=True,
            help='Type of the device')
 @utils.arg('--version', metavar='<version>', required=True,
            help='Device version')
@@ -144,7 +144,7 @@ def do_node_show(cl, args):
 
 @utils.arg('--name', metavar='<device-name>', required=True,
            help='New node name')
-@utils.arg('--type', metavar='<type>', requires=True,
+@utils.arg('--type', metavar='<type>', required=True,
            help='Type of the node')
 @utils.arg('--address', metavar='<address>', required=True,
            help='Node address')
@@ -163,7 +163,7 @@ def do_node_create(cl, args):
            desthelp='LoadBalancer ID')
 @utils.arg('--name', metavar='<device-name>', required=True,
            help='Desired new node name')
-@utils.arg('--type', metavar='<type>', requires=True,
+@utils.arg('--type', metavar='<type>', required=True,
            help='Desired new type of the node')
 @utils.arg('--address', metavar='<address>', required=True,
            help='Node address')
@@ -223,7 +223,7 @@ def do_probe_show(cl, args):
 
 @utils.arg('--name', metavar='<probe-name>', required=True,
            help='New probe name')
-@utils.arg('--type', metavar='<type>', requires=True, help='Type of the probe')
+@utils.arg('--type', metavar='<type>', required=True, help='Type of the probe')
 @utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
@@ -257,7 +257,7 @@ def do_sticky_show(cl, args):
 
 @utils.arg('--name', metavar='<sticky-name>', required=True,
            help='New sticky name')
-@utils.arg('--type', metavar='<type>', requires=True,
+@utils.arg('--type', metavar='<type>', required=True,
            help='Type of the sticky')
 @utils.arg('lb-id', metavar='<lb-id>', dest='lbid', desthelp='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
