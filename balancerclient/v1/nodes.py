@@ -30,15 +30,18 @@ class NodeManager(base.Manager):
 
     def create(self, lb, name, type, address, port, weight, status,
                **extra):
-        body = {'node': {'name': name,
-                         'type': type,
-                         'address': address,
-                         'port': port,
-                         'weight': weight,
-                         'status': status}}
-        body.update(extra)
-        return self._create("/loadbalancers/%s/nodes" % (base.getid(lb),),
-                            body, 'node')
+        node = {'name': name,
+                'type': type,
+                'address': address,
+                'port': port,
+                'weight': weight,
+                'status': status}
+        node.update(extra)
+        body = {'nodes': [node]}
+        # XXX(akscram): create only one node at one time
+        nodes_raw = self._create("/loadbalancers/%s/nodes" % (base.getid(lb),),
+                                 body, 'nodes', return_raw=True)
+        return self.resource_class(self, nodes_raw[0])
 
     def update(self, lb, node,
                name=None, type=None, address=None, port=None, weight=None,

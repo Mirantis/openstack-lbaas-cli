@@ -110,16 +110,17 @@ class TestNodeManager(unittest2.TestCase):
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
         self.nodes.create(self.lb, 'node1', 'HW', '10.0.0.1', 80, 10, 'ACTIVE')
-        body = {'node': {'name': 'node1',
-                         'type': 'HW',
-                         'address': '10.0.0.1',
-                         'port': 80,
-                         'weight': 10,
-                         'status': 'ACTIVE'}}
+        body = {'nodes': [{'name': 'node1',
+                           'type': 'HW',
+                           'address': '10.0.0.1',
+                           'port': 80,
+                           'weight': 10,
+                           'status': 'ACTIVE'}]}
         expected = mock.call(self.nodes, '/loadbalancers/lbfakeid/nodes',
-                             body, 'node')
+                              body, 'nodes', return_raw=True)
         self.assertTrue(mock_create.called)
-        self.assertEqual(mock_create.mock_calls, [expected])
+        self.assertNotEqual(mock_create.mock_calls, [])
+        self.assertEqual(mock_create.mock_calls[0], expected)
 
     @mock.patch('balancerclient.common.base.Manager._update', autospec=True)
     def test_update(self, mock_update):
