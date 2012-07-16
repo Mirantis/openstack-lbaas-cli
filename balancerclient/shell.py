@@ -279,7 +279,7 @@ class OpenStackHelpFormatter(argparse.HelpFormatter):
 
 def main():
     try:
-        OpenStackBalancerShell().main(sys.argv[1:])
+        return OpenStackBalancerShell().main(sys.argv[1:])
     except Exception, err:
         LOG.exception("The operation executed with an error %r." % err)
         raise
