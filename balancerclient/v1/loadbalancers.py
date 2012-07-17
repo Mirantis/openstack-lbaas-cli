@@ -43,7 +43,7 @@ class LoadBalancerManager(base.Manager):
 
     def get(self, lb):
         return self._get("/loadbalancers/%s" % (base.getid(lb),),
-                         'loadbalancers')
+                         'loadbalancer')
 
     def get_for_vm(self, server):
         return self._get("/loadbalancers/find_for_VM/%s" %
