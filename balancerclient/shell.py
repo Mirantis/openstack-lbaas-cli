@@ -22,10 +22,14 @@ import argparse
 import httplib2
 import os
 import sys
+import logging
 
 from balancerclient.common import exceptions as exc
 from balancerclient.common import utils
 from balancerclient.v1 import shell as shell_v1
+
+
+LOG = logging.getLogger(__name__)
 
 
 class OpenStackBalancerShell(object):
@@ -275,10 +279,7 @@ class OpenStackHelpFormatter(argparse.HelpFormatter):
 
 def main():
     try:
-        OpenStackBalancerShell().main(sys.argv[1:])
-    except Exception, e:
-        if httplib2.debuglevel == 1:
-            raise  # dump stack.
-        else:
-            print >> sys.stderr, e
-        sys.exit(1)
+        return OpenStackBalancerShell().main(sys.argv[1:])
+    except Exception, err:
+        LOG.exception("The operation executed with an error %r." % err)
+        raise
