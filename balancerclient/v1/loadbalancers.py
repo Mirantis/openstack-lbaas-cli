@@ -36,7 +36,7 @@ class LoadBalancerManager(base.Manager):
                 'algorithm': algorithm,
                 'protocol': protocol}
         body.update(extra)
-        return self._create('/loadbalancers', body, 'loadbalancers')
+        return self._create('/loadbalancers', body, 'loadbalancer')
 
     def delete(self, lb):
         self._delete("/loadbalancers/%s" % (base.getid(lb),))

@@ -42,7 +42,7 @@ class TestLoadBalancerManager(unittest2.TestCase):
                 'algorithm': 'ROUNDROBIN',
                 'protocol': 'HTTP'}
         expected = mock.call(self.lbs, '/loadbalancers', body,
-                             'loadbalancers')
+                             'loadbalancer')
         self.assertTrue(mock_create.called)
         self.assertEqual(mock_create.mock_calls, [expected])
 
