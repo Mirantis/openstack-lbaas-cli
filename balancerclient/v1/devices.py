@@ -46,4 +46,4 @@ class DeviceManager(base.Manager):
         self._delete("/devices/%s" % base.getid(device))
 
     def get(self, device):
-        return self._get("/devices/%s" % base.getid(device), 'devices')
+        return self._get("/devices/%s" % base.getid(device), 'device')
