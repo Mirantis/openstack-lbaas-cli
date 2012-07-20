@@ -107,6 +107,15 @@ class TestNodeManager(unittest2.TestCase):
         self.node = mock.Mock(id='fakeid')
         self.lb = mock.Mock(id='lbfakeid')
 
+    @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
+    def test_get(self, mock_get):
+        self.nodes.get(self.lb, self.node)
+        expected = mock.call(self.nodes,
+                             '/loadbalancers/lbfakeid/nodes/fakeid',
+                             'node')
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
         self.nodes.create(self.lb, 'node1', 'HW', '10.0.0.1', 80, 10, 'ACTIVE')
@@ -135,7 +144,7 @@ class TestNodeManager(unittest2.TestCase):
                 'status': 'ACTIVE'}
         expected = mock.call(self.nodes,
                              '/loadbalancers/lbfakeid/nodes/fakeid',
-                             body, 'nodes')
+                             body, 'node')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
 
@@ -202,7 +211,7 @@ class TestDeviceManager(unittest2.TestCase):
     @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
     def test_get(self, mock_get):
         self.devices.get(self.device)
-        expected = mock.call(self.devices, '/devices/fakeid', 'devices')
+        expected = mock.call(self.devices, '/devices/fakeid', 'device')
         self.assertTrue(mock_get.called)
         self.assertEqual(mock_get.mock_calls, [expected])
 
