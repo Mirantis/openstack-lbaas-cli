@@ -60,7 +60,7 @@ class NodeManager(base.Manager):
         body.update(extra)
         return self._update("/loadbalancers/%s/nodes/%s" % (base.getid(lb),
                                                             base.getid(node)),
-                            body, 'nodes')
+                            body, 'node')
 
     def get(self, lb, node):
         return self._get("/loadbalancers/%s/nodes/%s" % (base.getid(lb),

@@ -144,7 +144,7 @@ class TestNodeManager(unittest2.TestCase):
                 'status': 'ACTIVE'}
         expected = mock.call(self.nodes,
                              '/loadbalancers/lbfakeid/nodes/fakeid',
-                             body, 'nodes')
+                             body, 'node')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
 
