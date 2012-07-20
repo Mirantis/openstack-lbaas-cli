@@ -202,7 +202,7 @@ class TestDeviceManager(unittest2.TestCase):
     @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
     def test_get(self, mock_get):
         self.devices.get(self.device)
-        expected = mock.call(self.devices, '/devices/fakeid', 'devices')
+        expected = mock.call(self.devices, '/devices/fakeid', 'device')
         self.assertTrue(mock_get.called)
         self.assertEqual(mock_get.mock_calls, [expected])
 
