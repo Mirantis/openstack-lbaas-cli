@@ -62,6 +62,11 @@ class NodeManager(base.Manager):
                                                             base.getid(node)),
                             body, 'nodes')
 
+    def get(self, lb, node):
+        return self._get("/loadbalancers/%s/nodes/%s" % (base.getid(lb),
+                                                         base.getid(node)),
+                         'node')
+
     def update_status(self, lb, node, status):
         return self._update("/loadbalancers/%s/nodes/%s/%s" %
                                 (base.getid(lb), base.getid(node), status),
