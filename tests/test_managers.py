@@ -225,8 +225,8 @@ class TestProbeManager(unittest2.TestCase):
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
         self.probes.create(self.lb, 'probe1', 'ICMP')
-        body = {'name': 'probe1',
-                'type': 'ICMP'}
+        body = {'healthMonitoring': {'name': 'probe1',
+                                     'type': 'ICMP'}}
         expected = mock.call(self.probes,
                              '/loadbalancers/lbfakeid/healthMonitoring', body,
                              'healthMonitoring')

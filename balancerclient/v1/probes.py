@@ -29,9 +29,10 @@ class ProbeManager(base.Manager):
     resource_class = Probe
 
     def create(self, lb, name, type, **extra):
-        body = {'name': name,
-                'type': type}
-        body.update(extra)
+        probe = {'name': name,
+                 'type': type}
+        probe.update(extra)
+        body = {'healthMonitoring': probe}
         return self._create("/loadbalancers/%s/healthMonitoring" %
                                 (base.getid(lb),),
                             body, 'healthMonitoring')
