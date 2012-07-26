@@ -36,6 +36,11 @@ class StickyManager(base.Manager):
                                 (base.getid(lb),),
                             body, 'sessionPersistence')
 
+    def get(self, lb, sticky):
+        self._get("/loadbalancers/%s/sessionPersistence/%s" %
+                    (base.getid(lb), base.getid(sticky)),
+                  'sessionPersistence')
+
     def delete(self, lb, sticky):
         self._delete("/loadbalancers/%s/sessionPersistence/%s" %
                      (base.getid(lb), base.getid(sticky)))
