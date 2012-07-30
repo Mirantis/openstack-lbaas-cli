@@ -222,6 +222,17 @@ class TestProbeManager(unittest2.TestCase):
         self.probe = mock.Mock(id='fakeid')
         self.lb = mock.Mock(id='lbfakeid')
 
+    @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
+    def test_get(self, mock_get):
+        mock_get.return_value = mock_probe = mock.Mock()
+        probe = self.probes.get(self.lb, self.probe)
+        expected = mock.call(self.probes,
+                             '/loadbalancers/lbfakeid/healthMonitoring/fakeid',
+                             'healthMonitoring')
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+        self.assertEqual(probe, mock_probe)
+
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
         self.probes.create(self.lb, 'probe1', 'ICMP')
