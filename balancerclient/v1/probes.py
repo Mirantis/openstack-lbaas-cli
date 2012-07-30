@@ -37,6 +37,11 @@ class ProbeManager(base.Manager):
                                 (base.getid(lb),),
                             body, 'healthMonitoring')
 
+    def get(self, lb, probe):
+        return self._get("/loadbalancers/%s/healthMonitoring/%s" %
+                            (base.getid(lb), base.getid(probe)),
+                         'healthMonitoring')
+
     def delete(self, lb, probe):
         self._delete("/loadbalancers/%s/healthMonitoring/%s" %
                      (base.getid(lb), base.getid(probe)))
