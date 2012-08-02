@@ -40,7 +40,7 @@ class DeviceManager(base.Manager):
                 'user': user,
                 'password': password}
         body.update(extra)
-        return self._create('/devices', body, 'devices')
+        return self._create('/devices', body, 'device')
 
     def delete(self, device):
         self._delete("/devices/%s" % base.getid(device))
