@@ -28,14 +28,14 @@ class Node(base.Resource):
 class NodeManager(base.Manager):
     resource_class = Node
 
-    def create(self, lb, name, type, address, port, weight, status,
+    def create(self, lb, name, type, address, port, weight, condition,
                **extra):
         node = {'name': name,
                 'type': type,
                 'address': address,
                 'port': port,
                 'weight': weight,
-                'status': status}
+                'condition': condition}
         node.update(extra)
         body = {'nodes': [node]}
         # XXX(akscram): create only one node at one time
@@ -67,9 +67,9 @@ class NodeManager(base.Manager):
                                                          base.getid(node)),
                          'node')
 
-    def update_status(self, lb, node, status):
+    def update_condition(self, lb, node, condition):
         return self._update("/loadbalancers/%s/nodes/%s/%s" %
-                                (base.getid(lb), base.getid(node), status),
+                                (base.getid(lb), base.getid(node), condition),
                             'loadbalancers')
 
     def delete(self, lb, node):

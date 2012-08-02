@@ -150,12 +150,15 @@ def do_node_show(cl, args):
            help='Node address')
 @utils.arg('--port', metavar='<port>', required=True, help='Node port')
 @utils.arg('--weight', metavar='<weight>', required=True, help='Node weight')
+@utils.arg('--condition', metavar='<condition>', required=True,
+           help='Node condition')
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
-            help='Extra properties')
+           help='Extra properties')
 def do_node_create(cl, args):
     node = cl.nodes.create(args.lb_id, args.name, args.type, args.address,
-                           args.port, args.weight, **extra_args(args.extra))
+                           args.port, args.weight, args.condition,
+                           **extra_args(args.extra))
     utils.print_dict(node._info)
 
 
