@@ -21,6 +21,7 @@ from . import loadbalancers
 from . import nodes
 from . import probes
 from . import stickies
+from . import vips
 
 
 class Client(object):
@@ -40,3 +41,4 @@ class Client(object):
         self.nodes = nodes.NodeManager(self)
         self.probes = probes.ProbeManager(self)
         self.stickies = stickies.StickyManager(self)
+        self.vips = vips.VIPManager(self)

@@ -8,6 +8,7 @@ from balancerclient.v1.nodes import NodeManager
 from balancerclient.v1.devices import DeviceManager
 from balancerclient.v1.probes import ProbeManager
 from balancerclient.v1.stickies import StickyManager
+from balancerclient.v1.vips import VIPManager
 
 
 class TestClient(unittest2.TestCase):
@@ -20,6 +21,7 @@ class TestClient(unittest2.TestCase):
         self.assertTrue(hasattr(client, 'nodes'))
         self.assertTrue(hasattr(client, 'probes'))
         self.assertTrue(hasattr(client, 'stickies'))
+        self.assertTrue(hasattr(client, 'vips'))
 
 
 class TestLoadBalancerManager(unittest2.TestCase):
@@ -287,5 +289,66 @@ class TestStickyManager(unittest2.TestCase):
         expected = mock.call(self.stickies,
                              '/loadbalancers/lbfakeid/sessionPersistence',
                              'sessionPersistence')
+        self.assertTrue(mock_list.called)
+        self.assertEqual(mock_list.mock_calls, [expected])
+
+
+class TestVIPManager(unittest2.TestCase):
+    def setUp(self):
+        self.vips = VIPManager(mock.Mock())
+        self.vip = mock.Mock(id='fakeid')
+        self.lb = mock.Mock(id='lbfakeid')
+
+    @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
+    def test_create(self, mock_create):
+        self.vips.create(self.lb, 'vip100', '10.0.0.1', '255.255.255.0', 80,
+                         vlan=100)
+        body = {'virtualIp': {'name': 'vip100',
+                              'address': '10.0.0.1',
+                              'mask': '255.255.255.0',
+                              'port': 80,
+                              'VLAN': 100}}
+        expected = mock.call(self.vips,
+                             '/loadbalancers/lbfakeid/virtualIps',
+                             body,
+                             'virtualIp')
+        self.assertTrue(mock_create.called)
+        self.assertEqual(mock_create.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._delete', autospec=True)
+    def test_delete(self, mock_delete):
+        self.vips.delete(self.lb, self.vip)
+        expected = mock.call(self.vips,
+                        '/loadbalancers/lbfakeid/virtualIps/fakeid')
+        self.assertTrue(mock_delete.called)
+        self.assertEqual(mock_delete.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._update', autospec=True)
+    def test_update(self, mock_update):
+        self.vips.update(self.lb, self.vip,
+                         name='vlan100-80', address='10.2.0.1')
+        body = {'name': 'vlan100-80',
+                'address': '10.2.0.1'}
+        expected = mock.call(self.vips,
+                        '/loadbalancers/lbfakeid/virtualIps/fakeid',
+                        body,
+                        'virtualIp')
+        self.assertTrue(mock_update.called)
+        self.assertEqual(mock_update.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
+    def test_get(self, mock_get):
+        self.vips.get(self.lb, self.vip)
+        expected = mock.call(self.vips,
+                             '/loadbalancers/lbfakeid/virtualIps/fakeid',
+                             'virtualIp')
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
+    def test_list(self, mock_list):
+        self.vips.list(self.lb)
+        expected = mock.call(self.vips, '/loadbalancers/lbfakeid/virtualIps',
+                             'virtualIps')
         self.assertTrue(mock_list.called)
         self.assertEqual(mock_list.mock_calls, [expected])
