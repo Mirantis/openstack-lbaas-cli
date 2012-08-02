@@ -124,7 +124,7 @@ class TestNodeManager(unittest2.TestCase):
                            'address': '10.0.0.1',
                            'port': 80,
                            'weight': 10,
-                           'status': 'ACTIVE'}]}
+                           'condition': 'ACTIVE'}]}
         expected = mock.call(self.nodes, '/loadbalancers/lbfakeid/nodes',
                               body, 'nodes', return_raw=True)
         self.assertTrue(mock_create.called)
@@ -135,13 +135,13 @@ class TestNodeManager(unittest2.TestCase):
     def test_update(self, mock_update):
         self.nodes.update(self.lb, self.node, name='node1', type='HW',
                           address='10.0.0.1', port=80, weight=10,
-                          status='ACTIVE')
+                          condition='ACTIVE')
         body = {'name': 'node1',
                 'type': 'HW',
                 'address': '10.0.0.1',
                 'port': 80,
                 'weight': 10,
-                'status': 'ACTIVE'}
+                'condition': 'ACTIVE'}
         expected = mock.call(self.nodes,
                              '/loadbalancers/lbfakeid/nodes/fakeid',
                              body, 'node')
@@ -149,10 +149,10 @@ class TestNodeManager(unittest2.TestCase):
         self.assertEqual(mock_update.mock_calls, [expected])
 
     @mock.patch('balancerclient.common.base.Manager._update', autospec=True)
-    def test_update_status(self, mock_update):
-        self.nodes.update_status(self.lb, self.node, 'FAKESTATUS')
+    def test_update_condition(self, mock_update):
+        self.nodes.update_condition(self.lb, self.node, 'FAKECONDITION')
         expected = mock.call(self.nodes,
-                             '/loadbalancers/lbfakeid/nodes/fakeid/FAKESTATUS',
+                             '/loadbalancers/lbfakeid/nodes/fakeid/FAKECONDITION',
                              'loadbalancers')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
@@ -197,7 +197,7 @@ class TestDeviceManager(unittest2.TestCase):
                 'port': 22,
                 'user': 'fakeuser',
                 'password': 'fakepassword'}
-        expected = mock.call(self.devices, '/devices', body, 'devices')
+        expected = mock.call(self.devices, '/devices', body, 'device')
         self.assertTrue(mock_create.called)
         self.assertEqual(mock_create.mock_calls, [expected])
 
