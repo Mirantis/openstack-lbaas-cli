@@ -191,8 +191,6 @@ def do_node_update(cl, args):
         print "Node not updated, no arguments present."
         return
 
-    cl.nodes.update(args.lb_id, args.id, **kwargs)
-
     try:
         node = cl.nodes.update(args.lb_id, args.id, **kwargs)
         print 'Node has been updated.'
