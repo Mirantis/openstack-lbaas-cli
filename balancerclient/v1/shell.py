@@ -164,16 +164,12 @@ def do_node_create(cl, args):
     utils.print_dict(node._info)
 
 
-@utils.arg('--name', metavar='<device-name>', required=True,
-           help='Desired new node name')
-@utils.arg('--type', metavar='<type>', required=True,
-           help='Desired new type of the node')
-@utils.arg('--address', metavar='<address>', required=True,
-           help='Node address')
-@utils.arg('--port', metavar='<port>', required=True,
-           help='Desired new node port')
-@utils.arg('--weight', metavar='<weight>', required=True,
-           help='Desired new node weight')
+@utils.arg('--name', metavar='<device-name>', help='Desired new node name')
+@utils.arg('--type', metavar='<type>', help='Desired new type of the node')
+@utils.arg('--address', metavar='<address>', help='Node address')
+@utils.arg('--port', metavar='<port>', help='Desired new node port')
+@utils.arg('--weight', metavar='<weight>', help='Desired new node weight')
+@utils.arg('--condition', metavar='<condition>', help='Node condition')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
@@ -195,12 +191,15 @@ def do_node_update(cl, args):
         print "Node not updated, no arguments present."
         return
 
+    cl.nodes.update(args.lb_id, args.id, **kwargs)
+
     try:
-        node = cl.nodes.update(args.id, **kwargs)
-        print 'LoadBalancer has been updated.'
+        node = cl.nodes.update(args.lb_id, args.id, **kwargs)
+        print 'Node has been updated.'
         utils.print_dict(node._info)
     except Exception, e:
-        print 'Unable to update loadbalancer: %s' % e
+        print 'Unable to update node: %s' % e
+        raise
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
