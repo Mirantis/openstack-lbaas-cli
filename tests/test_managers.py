@@ -268,6 +268,17 @@ class TestStickyManager(unittest2.TestCase):
         self.sticky = mock.Mock(id='fakeid')
         self.lb = mock.Mock(id='lbfakeid')
 
+    @mock.patch('balancerclient.common.base.Manager._get', autospec=True)
+    def test_get(self, mock_get):
+        mock_get.return_value = mock_sticky = mock.Mock()
+        sticky = self.stickies.get(self.lb, self.sticky)
+        expected = mock.call(self.stickies,
+                        '/loadbalancers/lbfakeid/sessionPersistence/fakeid',
+                        'sessionPersistence')
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+        self.assertEqual(sticky, mock_sticky)
+
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
         self.stickies.create(self.lb, 'sticky1', 'HTTP')
