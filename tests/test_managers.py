@@ -39,7 +39,8 @@ class TestLoadBalancerManager(unittest2.TestCase):
 
     @mock.patch('balancerclient.common.base.Manager._create', autospec=True)
     def test_create(self, mock_create):
-        self.lbs.create('fake', 'ROUNDROBIN', 'HTTP', 'vipfake', '10.0.0.1', '255.255.255.0')
+        self.lbs.create('fake', 'ROUNDROBIN', 'HTTP', 'vipfake', '10.0.0.1',
+                        '255.255.255.0', 80)
         body = {'name': 'fake',
                 'algorithm': 'ROUNDROBIN',
                 'protocol': 'HTTP',
