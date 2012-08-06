@@ -133,6 +133,44 @@ class TestResource(unittest2.TestCase):
         self.assertTrue(hasattr(res, 'name'))
         self.assertEqual(res.name, 'fakename')
 
+    @mock.patch('balancerclient.common.base.Resource.get', autospec=True)
+    @mock.patch('balancerclient.common.base.Resource.is_loaded', autospec=True)
+    def test_get_info(self, mock_is_loaded, mock_get):
+        mock_is_loaded.return_value = True
+        payload = {'id': 'fakeid'}
+        res = base.Resource(mock.Mock(), payload, loaded=True)
+        info = res.get_info()
+        self.assertTrue(mock_is_loaded.called)
+        self.assertFalse(mock_get.called)
+        self.assertEqual(mock_is_loaded.call_count, 1)
+        self.assertEqual(info, payload)
+        self.assertIsNot(info, payload)
+
+    @mock.patch('balancerclient.common.base.Resource.get', autospec=True)
+    @mock.patch('balancerclient.common.base.Resource.is_loaded', autospec=True)
+    def test_get_info_with_get(self, mock_is_loaded, mock_get):
+        mock_is_loaded.return_value = False
+        payload = {'id': 'fakeid'}
+        res = base.Resource(mock.Mock(), payload, loaded=False)
+        info = res.get_info()
+        self.assertTrue(mock_is_loaded.called)
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_is_loaded.call_count, 1)
+        self.assertEqual(mock_get.call_count, 1)
+        self.assertEqual(info, payload)
+        self.assertIsNot(info, payload)
+
+    @mock.patch('balancerclient.common.base.Resource.get', autospec=True)
+    @mock.patch('balancerclient.common.base.Resource.is_loaded', autospec=True)
+    def test_get_info_none(self, mock_is_loaded, mock_get):
+        mock_is_loaded.return_value = True
+        res = base.Resource(mock.Mock(), {}, loaded=True)
+        info = res.get_info()
+        self.assertTrue(mock_is_loaded.called)
+        self.assertFalse(mock_get.called)
+        self.assertEqual(mock_is_loaded.call_count, 1)
+        self.assertEqual(info, {})
+
     def test_getattr_unloaded_getattr(self):
         manager = mock.Mock()
         manager.get.return_value = mock.Mock(_info={'id': 'fakeid',
