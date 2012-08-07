@@ -144,7 +144,7 @@ def do_node_show(cl, args):
     utils.print_dict(node._info)
 
 
-@utils.arg('--name', metavar='<device-name>', required=True,
+@utils.arg('--name', metavar='<node-name>', required=True,
            help='New node name')
 @utils.arg('--type', metavar='<type>', required=True,
            help='Type of the node')
@@ -164,7 +164,7 @@ def do_node_create(cl, args):
     utils.print_dict(node._info)
 
 
-@utils.arg('--name', metavar='<device-name>', help='Desired new node name')
+@utils.arg('--name', metavar='<node-name>', help='Desired new node name')
 @utils.arg('--type', metavar='<type>', help='Desired new type of the node')
 @utils.arg('--address', metavar='<address>', help='Node address')
 @utils.arg('--port', metavar='<port>', help='Desired new node port')
