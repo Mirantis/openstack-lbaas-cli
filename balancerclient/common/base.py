@@ -39,7 +39,7 @@ class Manager(object):
         self.api = api
 
     def _list(self, url, response_key, obj_class=None, body=None):
-        resp, body = self.api.json_request('GET', url, body=body)
+        resp, body = self.api.client.json_request('GET', url, body=body)
 
         if obj_class is None:
             obj_class = self.resource_class
@@ -48,22 +48,22 @@ class Manager(object):
         return [obj_class(self, res, loaded=True) for res in data if res]
 
     def _delete(self, url):
-        self.api.raw_request('DELETE', url)
+        self.api.client.raw_request('DELETE', url)
 
     def _update(self, url, body, response_key=None):
-        resp, body = self.api.json_request('PUT', url, body=body)
+        resp, body = self.api.client.json_request('PUT', url, body=body)
         # PUT requests may not return a body
         if body:
             return self.resource_class(self, body[response_key])
 
     def _create(self, url, body, response_key, return_raw=False):
-        resp, body = self.api.json_request('POST', url, body=body)
+        resp, body = self.api.client.json_request('POST', url, body=body)
         if return_raw:
             return body[response_key]
         return self.resource_class(self, body[response_key])
 
     def _get(self, url, response_key):
-        resp, body = self.api.json_request('GET', url)
+        resp, body = self.api.client.json_request('GET', url)
         return self.resource_class(self, body[response_key])
 
 

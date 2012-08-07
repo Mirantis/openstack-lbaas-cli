@@ -122,7 +122,6 @@ def do_lb_update(cl, args):
         raise
 
 
-
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to delete')
 def do_lb_delete(cl, args):
     cl.loadbalancers.delete(args.id)
