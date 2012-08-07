@@ -176,10 +176,11 @@ class TestResource(unittest2.TestCase):
         manager.get.return_value = mock.Mock(_info={'id': 'fakeid',
                                                     'name': 'fakename'})
         res = base.Resource(manager, {'id': 'fakeid'})
-        name = res.name
+        self.assertEqual(res.name, 'fakename')
         self.assertTrue(manager.get.called)
         self.assertEqual(manager.get.mock_calls, [mock.call('fakeid')])
-        self.assertEqual(name, 'fakename')
+        self.assertEqual(res._info, {'id': 'fakeid',
+                                     'name': 'fakename'})
 
     def test_get_unloaded(self):
         manager = MockWithoutAttrs(exclude_attrs=('get',))

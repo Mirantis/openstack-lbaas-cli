@@ -118,6 +118,7 @@ class Resource(object):
 
         new = self.manager.get(self.id)
         if new:
+            self._info = new._info
             self._add_details(new._info)
 
     def __eq__(self, other):
