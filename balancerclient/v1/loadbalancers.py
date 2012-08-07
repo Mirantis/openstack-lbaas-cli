@@ -61,12 +61,3 @@ class LoadBalancerManager(base.Manager):
         body.update(extra)
         return self._update("/loadbalancers/%s" % (base.getid(lb),), body,
                             'loadbalancer')
-
-    def list_nodes(self, lb):
-        return self.api.nodes.nodes_for_lb(lb)
-
-    def list_probes(self, lb):
-        return self.api.probes.probes_for_lb(lb)
-
-    def list_stickies(self, lb):
-        return self.api.stickies.stickies_for_lb(lb)

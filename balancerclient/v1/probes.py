@@ -46,7 +46,7 @@ class ProbeManager(base.Manager):
         self._delete("/loadbalancers/%s/healthMonitoring/%s" %
                      (base.getid(lb), base.getid(probe)))
 
-    def probes_for_lb(self, lb):
+    def list(self, lb):
         return self._list("/loadbalancers/%s/healthMonitoring" %
                               (base.getid(lb),),
                           'healthMonitoring')

@@ -132,7 +132,7 @@ def do_lb_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_node_list(cl, args):
-    nodes = cl.nodes.nodes_for_lb(args.lb_id)
+    nodes = cl.nodes.list(args.lb_id)
     utils.print_list(nodes, ('id', 'name', 'type', 'address', 'port',
                              'weight'))
 
@@ -214,7 +214,7 @@ def do_node_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_list(cl, args):
-    probes = cl.probes.probes_for_lb(args.lb_id)
+    probes = cl.probes.list(args.lb_id)
     utils.print_list(probes, ('id', 'name', 'type'))
 
 
@@ -248,7 +248,7 @@ def do_probe_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_sticky_list(cl, args):
-    stickies = cl.stickies.stickies_for_lb(args.lb_id)
+    stickies = cl.stickies.list(args.lb_id)
     utils.print_list(stickies, ('id', 'name', 'type'))
 
 

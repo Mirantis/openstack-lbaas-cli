@@ -76,6 +76,6 @@ class NodeManager(base.Manager):
         self._delete("/loadbalancers/%s/nodes/%s" % (base.getid(lb),
                                                      base.getid(node)))
 
-    def nodes_for_lb(self, lb):
+    def list(self, lb):
         return self._list("/loadbalancers/%s/nodes" % (base.getid(lb),),
                           'nodes')

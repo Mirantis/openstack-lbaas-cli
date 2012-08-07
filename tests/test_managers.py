@@ -82,24 +82,6 @@ class TestLoadBalancerManager(unittest2.TestCase):
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
 
-    def test_list_nodes(self):
-        self.lbs.list_nodes(self.lb)
-        self.assertTrue(self.api.nodes.nodes_for_lb.called)
-        self.assertEqual(self.api.nodes.nodes_for_lb.mock_calls,
-                         [mock.call(self.lb)])
-
-    def test_list_probes(self):
-        self.lbs.list_probes(self.lb)
-        self.assertTrue(self.api.probes.probes_for_lb.called)
-        self.assertEqual(self.api.probes.probes_for_lb.mock_calls,
-                         [mock.call(self.lb)])
-
-    def test_list_stickies(self):
-        self.lbs.list_stickies(self.lb)
-        self.assertTrue(self.api.stickies.stickies_for_lb.called)
-        self.assertEqual(self.api.stickies.stickies_for_lb.mock_calls,
-                         [mock.call(self.lb)])
-
 
 class TestNodeManager(unittest2.TestCase):
     def setUp(self):
@@ -166,8 +148,8 @@ class TestNodeManager(unittest2.TestCase):
         self.assertEqual(mock_delete.mock_calls, [expected])
 
     @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
-    def test_nodes_for_lb(self, mock_list):
-        self.nodes.nodes_for_lb(self.lb)
+    def test_nodes_list(self, mock_list):
+        self.nodes.list(self.lb)
         expected = mock.call(self.nodes, '/loadbalancers/lbfakeid/nodes',
                              'nodes')
         self.assertTrue(mock_list.called)
@@ -253,8 +235,8 @@ class TestProbeManager(unittest2.TestCase):
         self.assertEqual(mock_delete.mock_calls, [expected])
 
     @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
-    def test_probes_for_lb(self, mock_list):
-        self.probes.probes_for_lb(self.lb)
+    def test_probes_list(self, mock_list):
+        self.probes.list(self.lb)
         expected = mock.call(self.probes,
                              '/loadbalancers/lbfakeid/healthMonitoring',
                              'healthMonitoring')
@@ -300,8 +282,8 @@ class TestStickyManager(unittest2.TestCase):
         self.assertEqual(mock_delete.mock_calls, [expected])
 
     @mock.patch('balancerclient.common.base.Manager._list', autospec=True)
-    def test_sticky_for_lb(self, mock_list):
-        self.stickies.stickies_for_lb(self.lb)
+    def test_sticky_list(self, mock_list):
+        self.stickies.list(self.lb)
         expected = mock.call(self.stickies,
                              '/loadbalancers/lbfakeid/sessionPersistence',
                              'sessionPersistence')
