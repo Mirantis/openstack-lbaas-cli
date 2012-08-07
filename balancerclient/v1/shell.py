@@ -186,6 +186,8 @@ def do_node_update(cl, args):
         kwargs['port'] = args.port
     if args.weight:
         kwargs['weight'] = args.weight
+    if args.condition:
+        kwargs['condition'] = args.condition
 
     if not len(kwargs):
         print "Node not updated, no arguments present."
