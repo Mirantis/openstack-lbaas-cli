@@ -81,12 +81,10 @@ def do_lb_show(cl, args):
 
 
 @utils.arg('--name', metavar='<lb-name>', required=True, help='New lb name')
-@utils.arg('--algorithm', metavar='<algorithm>',
+@utils.arg('--algorithm', metavar='<algorithm>', required=True,
            help='Algorithm of choosing servers')
-@utils.arg('--protocol', metavar='<protocol>',
+@utils.arg('--protocol', metavar='<protocol>', required=True,
            help='Protocol of load balancing')
-@utils.arg('--extra', metavar="<key=value>", action='append', default=[],
-            help='Load Balancer extra properties')
 @utils.arg('--vip-name', metavar='<vip-name>', required=True,
            help='New VIP name')
 @utils.arg('--vip-address', metavar='<vip-address>', required=True,
@@ -97,6 +95,8 @@ def do_lb_show(cl, args):
            help='Virtual IP port')
 @utils.arg('--vip-type', metavar='<vip-type>', help='Virtual IP type')
 @utils.arg('--vip-vlan', metavar='<vip-vlan>', help='Virtual IP VLAN')
+@utils.arg('--extra', metavar="<key=value>", action='append', default=[],
+            help='Load Balancer extra properties')
 def do_lb_create(cl, args):
     lb = cl.loadbalancers.create(args.name, args.algorithm, args.protocol,
                                  args.vip_name, args.vip_address,
