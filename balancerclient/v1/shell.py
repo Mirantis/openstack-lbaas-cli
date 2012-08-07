@@ -114,11 +114,13 @@ def do_lb_update(cl, args):
         return
 
     try:
-        cl.loadbalancers.update(args.id, **kwargs)
+        lb = cl.loadbalancers.update(args.id, **kwargs)
         print 'LoadBalancer has been updated.'
+        utils.print_dict(lb._info)
     except Exception, e:
         print 'Unable to update loadbalancer: %s' % e
         raise
+
 
 
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to delete')
@@ -195,8 +197,9 @@ def do_node_update(cl, args):
         return
 
     try:
-        cl.nodes.update(args.id, **kwargs)
+        node = cl.nodes.update(args.id, **kwargs)
         print 'LoadBalancer has been updated.'
+        utils.print_dict(node._info)
     except Exception, e:
         print 'Unable to update loadbalancer: %s' % e
 
