@@ -118,6 +118,7 @@ def do_lb_update(cl, args):
         print 'LoadBalancer has been updated.'
     except Exception, e:
         print 'Unable to update loadbalancer: %s' % e
+        raise
 
 
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to delete')

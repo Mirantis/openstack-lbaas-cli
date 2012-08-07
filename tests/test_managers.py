@@ -78,7 +78,7 @@ class TestLoadBalancerManager(unittest2.TestCase):
                 'algorithm': 'LEASTCONNECTION',
                 'protocol': 'FTP'}
         expected = mock.call(self.lbs, '/loadbalancers/fakeid', body,
-                             'loadbalancers')
+                             'loadbalancer')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
 
