@@ -134,8 +134,8 @@ class TestNodeManager(unittest2.TestCase):
     def test_update_condition(self, mock_update):
         self.nodes.update_condition(self.lb, self.node, 'FAKECONDITION')
         expected = mock.call(self.nodes,
-                             '/loadbalancers/lbfakeid/nodes/fakeid/FAKECONDITION',
-                             'loadbalancers')
+                       '/loadbalancers/lbfakeid/nodes/fakeid/FAKECONDITION',
+                       'loadbalancers')
         self.assertTrue(mock_update.called)
         self.assertEqual(mock_update.mock_calls, [expected])
 
