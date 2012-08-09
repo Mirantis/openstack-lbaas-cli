@@ -37,7 +37,8 @@ class LoadBalancerManager(base.Manager):
                **extra):
         vip = {'name': vip_name,
                'address': vip_address,
-               'mask': vip_mask}
+               'mask': vip_mask,
+               'port': vip_port}
         if vip_type is not None:
             vip['type'] = vip_type
         if vip_vlan is not None:
