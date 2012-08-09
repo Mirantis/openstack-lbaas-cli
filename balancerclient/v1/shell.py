@@ -134,7 +134,7 @@ def do_lb_delete(cl, args):
 def do_node_list(cl, args):
     nodes = cl.nodes.list(args.lb_id)
     utils.print_list(nodes, ('id', 'name', 'type', 'address', 'port',
-                             'weight'))
+                             'weight', 'condition', 'status'))
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
