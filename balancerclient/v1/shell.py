@@ -37,7 +37,7 @@ def do_device_list(cl, args):
 @utils.arg('id', metavar='<device-id>', help='Device ID to display')
 def do_device_show(cl, args):
     device = cl.devices.get(args.id)
-    utils.print_dict(device.get_info())
+    utils.print_dict(device._info)
 
 
 @utils.arg('--name', metavar='<device-name>', required=True,
@@ -58,7 +58,7 @@ def do_device_create(cl, args):
     device = cl.devices.create(args.name, args.type, args.version, args.ip,
                                args.port, args.user, args.password,
                                **extra_args(args.extra))
-    utils.print_dict(device.get_info())
+    utils.print_dict(device._info)
 
 
 @utils.arg('id', metavar='<device-id>', help='Device ID to delete')
@@ -155,7 +155,7 @@ def do_node_list(cl, args):
 @utils.arg('id', metavar='<node-id>', help='Node ID to display')
 def do_node_show(cl, args):
     node = cl.nodes.get(args.lb_id, args.id)
-    utils.print_dict(node.get_info())
+    utils.print_dict(node._info)
 
 
 @utils.arg('--name', metavar='<node-name>', required=True,
@@ -175,7 +175,7 @@ def do_node_create(cl, args):
     node = cl.nodes.create(args.lb_id, args.name, args.type, args.address,
                            args.port, args.weight, args.condition,
                            **extra_args(args.extra))
-    utils.print_dict(node.get_info())
+    utils.print_dict(node._info)
 
 
 @utils.arg('--name', metavar='<node-name>', help='Desired new node name')
@@ -235,7 +235,7 @@ def do_probe_list(cl, args):
 @utils.arg('id', metavar='<probe-id>', help='Probe ID to display')
 def do_probe_show(cl, args):
     probe = cl.probes.get(args.lb_id, args.id)
-    utils.print_dict(probe.get_info())
+    utils.print_dict(probe._info)
 
 
 @utils.arg('--name', metavar='<probe-name>', required=True,
@@ -247,7 +247,7 @@ def do_probe_show(cl, args):
 def do_probe_create(cl, args):
     probe = cl.probes.create(args.lb_id, args.name, args.type,
                              **extra_args(args.extra))
-    utils.print_dict(probe.get_info())
+    utils.print_dict(probe._info)
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
@@ -269,7 +269,7 @@ def do_sticky_list(cl, args):
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID to display')
 def do_sticky_show(cl, args):
     sticky = cl.stickies.get(args.lb_id, args.id)
-    utils.print_dict(sticky.get_info())
+    utils.print_dict(sticky._info)
 
 
 @utils.arg('--name', metavar='<sticky-name>', required=True,
@@ -282,7 +282,7 @@ def do_sticky_show(cl, args):
 def do_sticky_create(cl, args):
     sticky = cl.stickies.create(args.lb_id, args.name, args.type,
                                 **extra_args(args.extra))
-    utils.print_dict(sticky.get_info())
+    utils.print_dict(sticky._info)
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
@@ -304,7 +304,7 @@ def do_vip_list(cl, args):
 @utils.arg('id', metavar='<vip-id>', help='Virtual IP ID to display')
 def do_vip_show(cl, args):
     vip = cl.vips.get(args.lb_id, args.id)
-    utils.print_dict(vip.get_info())
+    utils.print_dict(vip._info)
 
 
 @utils.arg('--name', metavar='<vip-name>', required=True,
@@ -324,7 +324,7 @@ def do_vip_create(cl, args):
     vip = cl.vips.create(args.lb_id, args.name, args.address, args.mask,
                          args.port, type=args.type, vlan=args.vlan,
                          **extra_args(args.extra))
-    utils.print_dict(vip.get_info())
+    utils.print_dict(vip._info)
 
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
