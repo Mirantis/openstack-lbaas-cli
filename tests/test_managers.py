@@ -46,7 +46,8 @@ class TestLoadBalancerManager(unittest2.TestCase):
                 'protocol': 'HTTP',
                 'virtualIps': [{'name': 'vipfake',
                                 'address': '10.0.0.1',
-                                'mask': '255.255.255.0'}]}
+                                'mask': '255.255.255.0',
+                                'port': 80}]}
         expected = mock.call(self.lbs, '/loadbalancers', body,
                              'loadbalancer')
         self.assertTrue(mock_create.called)
