@@ -103,6 +103,13 @@ class Resource(object):
         info = ", ".join("%s=%s" % (k, getattr(self, k)) for k in reprkeys)
         return "<%s %s>" % (self.__class__.__name__, info)
 
+    def get_info(self):
+        if not self.is_loaded():
+            self.get()
+        if self._info:
+            return self._info.copy()
+        return {}
+
     def get(self):
         # set_loaded() first ... so if we have to bail, we know we tried.
         self.set_loaded(True)
@@ -111,6 +118,7 @@ class Resource(object):
 
         new = self.manager.get(self.id)
         if new:
+            self._info = new._info
             self._add_details(new._info)
 
     def __eq__(self, other):

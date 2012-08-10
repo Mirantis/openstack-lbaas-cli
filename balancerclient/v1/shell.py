@@ -77,20 +77,34 @@ def do_lb_list(cl, args):
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to display')
 def do_lb_show(cl, args):
     lb = cl.loadbalancers.get(args.id)
-    utils.print_dict(lb._info)
+    utils.print_dict(lb.get_info())
 
 
 @utils.arg('--name', metavar='<lb-name>', required=True, help='New lb name')
-@utils.arg('--algorithm', metavar='<algorithm>',
+@utils.arg('--algorithm', metavar='<algorithm>', required=True,
            help='Algorithm of choosing servers')
-@utils.arg('--protocol', metavar='<protocol>',
+@utils.arg('--protocol', metavar='<protocol>', required=True,
            help='Protocol of load balancing')
+@utils.arg('--vip-name', metavar='<vip-name>', required=True,
+           help='New VIP name')
+@utils.arg('--vip-address', metavar='<vip-address>', required=True,
+           help='Virtual IP address')
+@utils.arg('--vip-mask', metavar='<vip-mask>', required=True,
+           help='Virtual IP address mask')
+@utils.arg('--vip-port', metavar='<vip-port>', required=True,
+           help='Virtual IP port')
+@utils.arg('--vip-type', metavar='<vip-type>', help='Virtual IP type')
+@utils.arg('--vip-vlan', metavar='<vip-vlan>', help='Virtual IP VLAN')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
-            help='Extra properties')
+            help='Load Balancer extra properties')
 def do_lb_create(cl, args):
     lb = cl.loadbalancers.create(args.name, args.algorithm, args.protocol,
+                                 args.vip_name, args.vip_address,
+                                 args.vip_mask, args.vip_port,
+                                 vip_type=args.vip_type,
+                                 vip_vlan=args.vip_vlan,
                                  **extra_args(args.extra))
-    utils.print_dict(lb._info)
+    utils.print_dict(lb.get_info())
 
 
 @utils.arg('--name', metavar='<lb-name>', help='Desired new lb name')
@@ -275,3 +289,78 @@ def do_sticky_create(cl, args):
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
 def do_sticky_delete(cl, args):
     cl.stickies.delete(args.lb_id, args.id)
+
+
+# Virtual IPs
+
+
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+def do_vip_list(cl, args):
+    vips = cl.vips.list(args.lb_id)
+    utils.print_list(vips, ('id', 'name', 'address', 'port'))
+
+
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+@utils.arg('id', metavar='<vip-id>', help='Virtual IP ID to display')
+def do_vip_show(cl, args):
+    vip = cl.vips.get(args.lb_id, args.id)
+    utils.print_dict(vip._info)
+
+
+@utils.arg('--name', metavar='<vip-name>', required=True,
+           help='New VIP name')
+@utils.arg('--address', metavar='<vip-address>', required=True,
+           help='Virtual IP address')
+@utils.arg('--mask', metavar='<vip-mask>', required=True,
+           help='Virtual IP address mask')
+@utils.arg('--port', metavar='<vip-port>', required=True,
+           help='Virtual IP port')
+@utils.arg('--type', metavar='<vip-type>', help='Virtual IP type')
+@utils.arg('--vlan', metavar='<vip-vlan>', help='Virtual IP VLAN')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+@utils.arg('--extra', metavar="<key=value>", action='append', default=[],
+            help='Extra properties')
+def do_vip_create(cl, args):
+    vip = cl.vips.create(args.lb_id, args.name, args.address, args.mask,
+                         args.port, type=args.type, vlan=args.vlan,
+                         **extra_args(args.extra))
+    utils.print_dict(vip._info)
+
+
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+@utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
+def do_vip_delete(cl, args):
+    cl.vips.delete(args.lb_id, args.id)
+
+
+@utils.arg('--name', metavar='<vip-name>', help='New VIP name')
+@utils.arg('--address', metavar='<vip-address>', help='Virtual IP address')
+@utils.arg('--mask', metavar='<vip-mask>', help='Virtual IP address mask')
+@utils.arg('--port', metavar='<vip-port>', help='Virtual IP port')
+@utils.arg('--type', metavar='<vip-type>', help='Virtual IP type')
+@utils.arg('--vlan', metavar='<vip-vlan>', help='Virtual IP VLAN')
+@utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
+@utils.arg('--extra', metavar="<key=value>", action='append', default=[],
+            help='Extra properties')
+def do_vip_update(cl, args):
+    kwargs = extra_args(args.extra)
+    if args.name:
+        kwargs['name'] = args.name
+    if args.address:
+        kwargs['address'] = args.address
+    if args.mask:
+        kwargs['mask'] = args.mask
+    if args.port:
+        kwargs['port'] = args.port
+    if args.vlan:
+        kwargs['vlan'] = args.vlan
+
+    if not len(kwargs):
+        print "Virtual IP not updated, no arguments present."
+        return
+
+    try:
+        cl.vip.update(args.id, **kwargs)
+        print 'Virtual IP has been updated.'
+    except Exception, e:
+        print 'Unable to update Virtual IP: %s' % e
