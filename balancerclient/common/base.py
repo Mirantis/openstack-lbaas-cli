@@ -133,11 +133,3 @@ class Resource(object):
 
     def set_loaded(self, val):
         self._loaded = val
-
-
-class Noop(object):
-    def __init__(self, manager, name, **kwargs):
-        self.name = name
-
-    def __getattr__(self, k):
-        return self.name
