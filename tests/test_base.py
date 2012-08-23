@@ -104,6 +104,12 @@ class TestManager(unittest2.TestCase):
         self.assertEqual(self.client.json_request.mock_calls,
                          [mock.call('GET', '/fakes')])
 
+    def test_get_raw(self):
+        self.client.json_request.return_value = \
+            (mock.Mock(), {'data': {'id': 'fakeid'}})
+        resp = self.manager._get('/fakes', 'data', return_raw=True)
+        self.assertEqual(resp, {'id': 'fakeid'})
+
 
 class TestResource(unittest2.TestCase):
     def test_getattr_loaded(self):

@@ -47,3 +47,9 @@ class DeviceManager(base.Manager):
 
     def get(self, device):
         return self._get("/devices/%s" % base.getid(device), 'device')
+
+    def list_algoritms(self):
+        return self._get('/algorithms', 'algorithms', return_raw=True)
+
+    def list_protocols(self):
+        return self._get('/protocols', 'protocols', return_raw=True)
