@@ -204,6 +204,20 @@ class TestDeviceManager(unittest2.TestCase):
         self.assertTrue(mock_get.called)
         self.assertEqual(mock_get.mock_calls, [expected])
 
+    @mock.patch('balancerclient.common.base.Manager._get')
+    def test_list_algorithms(self, mock_get):
+        self.devices.list_algoritms()
+        expected = mock.call('/algorithms', 'algorithms', return_raw=True)
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+
+    @mock.patch('balancerclient.common.base.Manager._get')
+    def test_list_protocols(self, mock_get):
+        self.devices.list_protocols()
+        expected = mock.call('/protocols', 'protocols', return_raw=True)
+        self.assertTrue(mock_get.called)
+        self.assertEqual(mock_get.mock_calls, [expected])
+
 
 class TestProbeManager(unittest2.TestCase):
     def setUp(self):
