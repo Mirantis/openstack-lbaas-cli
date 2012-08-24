@@ -66,6 +66,15 @@ def do_device_delete(cl, args):
     cl.devices.delete(args.id)
 
 
+def do_algorithms_list(cl, args):
+    algos = cl.devices.list_algoritms()
+    utils.print_flat_list(algos, ['algorithms'])
+
+
+def do_protocols_list(cl, args):
+    protos = cl.devices.list_protocols()
+    utils.print_flat_list(protos, ['protocols'])
+
 # LoadBalancers
 
 

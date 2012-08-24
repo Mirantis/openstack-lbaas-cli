@@ -146,6 +146,13 @@ def print_list(objs, fields, formatters={}, sortby_index=0):
     print pt.get_string(sortby=sortby)
 
 
+def print_flat_list(lst, field):
+    pt = prettytable.PrettyTable(field)
+    for el in lst:
+        pt.add_row([el])
+    print pt.get_string()
+
+
 def print_dict(d, property="Property"):
     pt = prettytable.PrettyTable([property, 'Value'], caching=False)
     pt.align = 'l'
