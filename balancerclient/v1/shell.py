@@ -94,24 +94,10 @@ def do_lb_show(cl, args):
            help='Algorithm of choosing servers')
 @utils.arg('--protocol', metavar='<protocol>', required=True,
            help='Protocol of load balancing')
-@utils.arg('--vip-name', metavar='<vip-name>', required=True,
-           help='New VIP name')
-@utils.arg('--vip-address', metavar='<vip-address>', required=True,
-           help='Virtual IP address')
-@utils.arg('--vip-mask', metavar='<vip-mask>', required=True,
-           help='Virtual IP address mask')
-@utils.arg('--vip-port', metavar='<vip-port>', required=True,
-           help='Virtual IP port')
-@utils.arg('--vip-type', metavar='<vip-type>', help='Virtual IP type')
-@utils.arg('--vip-vlan', metavar='<vip-vlan>', help='Virtual IP VLAN')
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Load Balancer extra properties')
 def do_lb_create(cl, args):
     lb = cl.loadbalancers.create(args.name, args.algorithm, args.protocol,
-                                 args.vip_name, args.vip_address,
-                                 args.vip_mask, args.vip_port,
-                                 vip_type=args.vip_type,
-                                 vip_vlan=args.vip_vlan,
                                  **extra_args(args.extra))
     utils.print_dict(lb.get_info())
 

@@ -32,21 +32,10 @@ class LoadBalancerManager(base.Manager):
         return self._list('/loadbalancers', 'loadbalancers')
 
     def create(self, name, algorithm, protocol,
-               vip_name, vip_address, vip_mask, vip_port,
-               vip_type=None, vip_vlan=None,
                **extra):
-        vip = {'name': vip_name,
-               'address': vip_address,
-               'mask': vip_mask,
-               'port': vip_port}
-        if vip_type is not None:
-            vip['type'] = vip_type
-        if vip_vlan is not None:
-            vip['VLAN'] = vip_vlan
         body = {'name': name,
                 'algorithm': algorithm,
-                'protocol': protocol,
-                'virtualIps': [vip]}
+                'protocol': protocol}
         body.update(extra)
         return self._create('/loadbalancers', body, 'loadbalancer')
 
