@@ -34,12 +34,20 @@ class Manager(object):
     operations for them.
     """
     resource_class = None
+    use_admin_url = False
 
     def __init__(self, api):
         self.api = api
 
-    def _list(self, url, response_key, obj_class=None, body=None):
-        resp, body = self.api.client.json_request('GET', url, body=body)
+    def _is_admin_url(self, admin_url):
+        return self.use_admin_url or admin_url
+
+    def _list(self, url, response_key, obj_class=None, body=None,
+              admin_url=False):
+        admin_url = self._is_admin_url(admin_url)
+        resp, body = self.api.client.json_request('GET', url,
+                                                  admin_url=admin_url,
+                                                  body=body)
 
         if obj_class is None:
             obj_class = self.resource_class
@@ -47,23 +55,34 @@ class Manager(object):
         data = body[response_key]
         return [obj_class(self, res, loaded=True) for res in data if res]
 
-    def _delete(self, url):
-        self.api.client.raw_request('DELETE', url)
+    def _delete(self, url, admin_url=False):
+        admin_url = self._is_admin_url(admin_url)
+        self.api.client.raw_request('DELETE', url, admin_url=admin_url)
 
-    def _update(self, url, body, response_key=None):
-        resp, body = self.api.client.json_request('PUT', url, body=body)
+    def _update(self, url, body, response_key=None, admin_url=False):
+        admin_url = self._is_admin_url(admin_url)
+        resp, body = self.api.client.json_request('PUT', url,
+                                                  admin_url=admin_url,
+                                                  body=body)
         # PUT requests may not return a body
         if body:
             return self.resource_class(self, body[response_key])
 
-    def _create(self, url, body, response_key, return_raw=False):
-        resp, body = self.api.client.json_request('POST', url, body=body)
+    def _create(self, url, body, response_key,
+                admin_url=False,
+                return_raw=False):
+        admin_url = self._is_admin_url(admin_url)
+        resp, body = self.api.client.json_request('POST', url,
+                                                  admin_url=admin_url,
+                                                  body=body)
         if return_raw:
             return body[response_key]
         return self.resource_class(self, body[response_key])
 
-    def _get(self, url, response_key, return_raw=False):
-        resp, body = self.api.client.json_request('GET', url)
+    def _get(self, url, response_key, return_raw=False, admin_url=False):
+        admin_url = self._is_admin_url(admin_url)
+        resp, body = self.api.client.json_request('GET', url,
+                                                  admin_url=admin_url)
         if return_raw:
             return body[response_key]
         return self.resource_class(self, body[response_key])

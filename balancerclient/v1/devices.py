@@ -27,6 +27,7 @@ class Device(base.Resource):
 
 class DeviceManager(base.Manager):
     resource_class = Device
+    use_admin_url = True
 
     def list(self):
         return self._list('/devices', 'devices')

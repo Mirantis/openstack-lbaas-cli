@@ -43,19 +43,23 @@ class TestManager(unittest2.TestCase):
         self.client.json_request.return_value = \
             (mock.Mock(), {'data': [{'id': 'fakeid1'}, {'id': 'fakeid2'}]})
         objs = self.manager._list('/fakes', 'data', body='fakebody')
-        expected = [mock.call(self.manager, {'id': 'fakeid1'}, loaded=True),
-                    mock.call(self.manager, {'id': 'fakeid2'}, loaded=True)]
+        expected = [
+            mock.call(self.manager, {'id': 'fakeid1'}, loaded=True),
+            mock.call(self.manager, {'id': 'fakeid2'}, loaded=True),
+        ]
         self.assertTrue(self.client.json_request.called)
         self.assertTrue(self.resource.called)
-        self.assertEqual(self.client.json_request.mock_calls,
-                         [mock.call('GET', '/fakes', body='fakebody')])
+        self.assertEqual(self.client.json_request.mock_calls, [
+            mock.call('GET', '/fakes', admin_url=False, body='fakebody'),
+        ])
         self.assertEqual(self.resource.mock_calls, expected)
 
     def test_delete(self):
         self.manager._delete('/fakes')
         self.assertTrue(self.client.raw_request.called)
-        self.assertEqual(self.client.raw_request.mock_calls,
-                         [mock.call('DELETE', '/fakes')])
+        self.assertEqual(self.client.raw_request.mock_calls, [
+            mock.call('DELETE', '/fakes', admin_url=False),
+        ])
 
     def test_update(self):
         self.client.json_request.return_value = \
@@ -65,10 +69,12 @@ class TestManager(unittest2.TestCase):
         obj = self.manager._update('/fakes', body, response_key='data')
         self.assertTrue(self.client.json_request.called)
         self.assertTrue(self.resource.called)
-        self.assertEqual(self.client.json_request.mock_calls,
-                         [mock.call('PUT', '/fakes', body=body)])
-        self.assertEqual(self.resource.mock_calls,
-                         [mock.call(self.manager, {'id': 'fakeid'})])
+        self.assertEqual(self.client.json_request.mock_calls, [
+            mock.call('PUT', '/fakes', admin_url=False, body=body),
+        ])
+        self.assertEqual(self.resource.mock_calls, [
+            mock.call(self.manager, {'id': 'fakeid'})
+        ])
 
     def test_create(self):
         self.client.json_request.return_value = \
@@ -78,10 +84,12 @@ class TestManager(unittest2.TestCase):
         obj = self.manager._create('/fakes', body, 'data')
         self.assertTrue(self.client.json_request.called)
         self.assertTrue(self.resource.called)
-        self.assertEqual(self.client.json_request.mock_calls,
-                         [mock.call('POST', '/fakes', body=body)])
-        self.assertEqual(self.resource.mock_calls,
-                         [mock.call(self.manager, {'id': 'fakeid'})])
+        self.assertEqual(self.client.json_request.mock_calls, [
+            mock.call('POST', '/fakes', admin_url=False, body=body),
+        ])
+        self.assertEqual(self.resource.mock_calls, [
+            mock.call(self.manager, {'id': 'fakeid'}),
+        ])
 
     def test_create_raw(self):
         self.client.json_request.return_value = \
@@ -91,8 +99,9 @@ class TestManager(unittest2.TestCase):
         obj = self.manager._create('/fakes', body, 'data', return_raw=True)
         self.assertTrue(self.client.json_request.called)
         self.assertFalse(self.resource.called)
-        self.assertEqual(self.client.json_request.mock_calls,
-                         [mock.call('POST', '/fakes', body=body)])
+        self.assertEqual(self.client.json_request.mock_calls, [
+            mock.call('POST', '/fakes', admin_url=False, body=body),
+        ])
         self.assertEqual(obj, {'id': 'fakeid'})
 
     def test_get(self):
@@ -101,13 +110,15 @@ class TestManager(unittest2.TestCase):
         obj = self.manager._get('/fakes', 'data')
         self.assertTrue(self.client.json_request.called)
         self.assertTrue(self.resource.called)
-        self.assertEqual(self.client.json_request.mock_calls,
-                         [mock.call('GET', '/fakes')])
+        self.assertEqual(self.client.json_request.mock_calls, [
+            mock.call('GET', '/fakes', admin_url=False),
+        ])
 
     def test_get_raw(self):
         self.client.json_request.return_value = \
             (mock.Mock(), {'data': {'id': 'fakeid'}})
-        resp = self.manager._get('/fakes', 'data', return_raw=True)
+        resp = self.manager._get('/fakes', 'data', return_raw=True,
+                                 admin_url=False)
         self.assertEqual(resp, {'id': 'fakeid'})
 
 

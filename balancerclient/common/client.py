@@ -38,7 +38,7 @@ class HTTPClient(httplib2.Http):
     def __init__(self, endpoint=None, token=None, username=None,
                  password=None, tenant_name=None, tenant_id=None,
                  region_name=None, auth_url=None, auth_tenant_id=None,
-                 timeout=600, insecure=False):
+                 endpoint_type=None, timeout=600, insecure=False):
         super(HTTPClient, self).__init__(timeout=timeout)
         self.endpoint = endpoint
         self.auth_token = token
@@ -49,6 +49,7 @@ class HTTPClient(httplib2.Http):
         self.tenant_name = tenant_name
         self.tenant_id = tenant_id
         self.region_name = region_name
+        self.endpoint_type = endpoint_type
         self.force_exception_to_status_code = True
         self.disable_ssl_certificate_validation = insecure
         if self.endpoint is None:
@@ -100,8 +101,26 @@ class HTTPClient(httplib2.Http):
 
         return resp, body
 
-    def raw_request(self, method, url, **kwargs):
-        url = self.endpoint + url
+    def _get_endpoint(self, admin_url=False):
+        """ Retrieve endpoint from service catalog.
+        """
+        if self.endpoint_type:
+            endpoint_type = self.endpoint_type
+        else:
+            if admin_url:
+                endpoint_type = 'adminURL'
+            else:
+                endpoint_type = 'publicURL'
+        endpoint = self.service_catalog.url_for(attr='region',
+                                                filter_value=self.region_name,
+                                                endpoint_type=endpoint_type)
+        return endpoint
+
+    def raw_request(self, method, url, admin_url=False, **kwargs):
+        if self.endpoint:
+            url = self.endpoint + url
+        else:
+            url = self._get_endpoint(admin_url=admin_url) + url
 
         kwargs.setdefault('headers', {})
         kwargs['headers'].setdefault('Content-Type',
@@ -114,8 +133,11 @@ class HTTPClient(httplib2.Http):
 
         return resp, body
 
-    def json_request(self, method, url, **kwargs):
-        url = self.endpoint + url
+    def json_request(self, method, url, admin_url=False, **kwargs):
+        if self.endpoint:
+            url = self.endpoint + url
+        else:
+            url = self._get_endpoint(admin_url=admin_url) + url
         resp, body = self._json_request(method, url, **kwargs)
         return resp, body
 
@@ -143,6 +165,3 @@ class HTTPClient(httplib2.Http):
         except KeyError:
             logger.exception("Parse service catalog failed.")
             raise exceptions.AuthorizationFailure()
-
-        self.endpoint = self.service_catalog.url_for(attr='region',
-                                    filter_value=self.region_name)

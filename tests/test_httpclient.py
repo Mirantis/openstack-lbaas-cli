@@ -198,7 +198,6 @@ class TestAuthHttpClient(unittest2.TestCase):
     def test_authenticate_tenant_name(self):
         self.get_token.return_value = {'id': 'fakeid',
                                        'tenant_id': 'faketenantid'}
-        self.url_for.return_value = 'http://localhost:8181'
         cl = client.HTTPClient(username='fakeuser', password='fakepass',
                                tenant_name='fake', auth_url='http://fakes',
                                region_name='fakeregion')
@@ -210,19 +209,15 @@ class TestAuthHttpClient(unittest2.TestCase):
         self.assertTrue(self.mock_json_request.called)
         self.assertTrue(self.mock_service_catalog.called)
         self.assertTrue(self.get_token.called)
-        self.assertTrue(self.url_for.called)
         self.assertEqual(self.mock_json_request.mock_calls, [expected])
-        self.assertEqual(self.mock_service_catalog.mock_calls,
-                         [mock.call('fakecatalog'),
-                          mock.call().get_token(),
-                          mock.call().url_for(attr='region',
-                                              filter_value='fakeregion')])
-        self.assertEqual(cl.endpoint, 'http://localhost:8181')
+        self.assertEqual(self.mock_service_catalog.mock_calls, [
+                            mock.call('fakecatalog'),
+                            mock.call().get_token(),
+                         ])
 
     def test_authenticate_tenant_id(self):
         self.get_token.return_value = {'id': 'fakeid',
                                        'tenant_id': 'faketenantid'}
-        self.url_for.return_value = 'http://localhost:8181'
         cl = client.HTTPClient(username='fakeuser', password='fakepass',
                                tenant_id='fakeid', auth_url='http://fakes',
                                region_name='fakeregion')
@@ -234,14 +229,11 @@ class TestAuthHttpClient(unittest2.TestCase):
         self.assertTrue(self.mock_json_request.called)
         self.assertTrue(self.mock_service_catalog.called)
         self.assertTrue(self.get_token.called)
-        self.assertTrue(self.url_for.called)
         self.assertEqual(self.mock_json_request.mock_calls, [expected])
-        self.assertEqual(self.mock_service_catalog.mock_calls,
-                         [mock.call('fakecatalog'),
-                          mock.call().get_token(),
-                          mock.call().url_for(attr='region',
-                                              filter_value='fakeregion')])
-        self.assertEqual(cl.endpoint, 'http://localhost:8181')
+        self.assertEqual(self.mock_service_catalog.mock_calls, [
+                            mock.call('fakecatalog'),
+                            mock.call().get_token(),
+                         ])
 
     def test_authenticate_failure(self):
         self.get_token.return_value = {}
@@ -253,3 +245,55 @@ class TestAuthHttpClient(unittest2.TestCase):
         self.assertTrue(self.mock_service_catalog.called)
         self.assertTrue(self.get_token.called)
         self.assertFalse(self.url_for.called)
+
+    def test_get_endpoint(self):
+        self.get_token.return_value = {'id': 'fakeid',
+                                       'tenant_id': 'faketenantid'}
+        self.url_for.return_value = 'fakeendpoint'
+        cl = client.HTTPClient(username='fakeuser', password='fakepass',
+                               tenant_id='fakeid', auth_url='http://fakes',
+                               region_name='fakeregion',
+                               endpoint_type='faketype')
+        endpoint = cl._get_endpoint()
+        self.assertEqual(endpoint, 'fakeendpoint')
+        self.mock_service_catalog.assert_has_calls([
+            mock.call('fakecatalog'),
+            mock.call().get_token(),
+            mock.call().url_for(attr='region',
+                                filter_value='fakeregion',
+                                endpoint_type='faketype')
+        ])
+
+    def test_get_endpoint_not_admin_url(self):
+        self.get_token.return_value = {'id': 'fakeid',
+                                       'tenant_id': 'faketenantid'}
+        self.url_for.return_value = 'fakeendpoint'
+        cl = client.HTTPClient(username='fakeuser', password='fakepass',
+                               tenant_id='fakeid', auth_url='http://fakes',
+                               region_name='fakeregion')
+        endpoint = cl._get_endpoint()
+        self.assertEqual(endpoint, 'fakeendpoint')
+        self.mock_service_catalog.assert_has_calls([
+            mock.call('fakecatalog'),
+            mock.call().get_token(),
+            mock.call().url_for(attr='region',
+                                filter_value='fakeregion',
+                                endpoint_type='publicURL')
+        ])
+
+    def test_get_endpoint_admin_url(self):
+        self.get_token.return_value = {'id': 'fakeid',
+                                       'tenant_id': 'faketenantid'}
+        self.url_for.return_value = 'fakeendpoint'
+        cl = client.HTTPClient(username='fakeuser', password='fakepass',
+                               tenant_id='fakeid', auth_url='http://fakes',
+                               region_name='fakeregion')
+        endpoint = cl._get_endpoint(admin_url=True)
+        self.assertEqual(endpoint, 'fakeendpoint')
+        self.mock_service_catalog.assert_has_calls([
+            mock.call('fakecatalog'),
+            mock.call().get_token(),
+            mock.call().url_for(attr='region',
+                                filter_value='fakeregion',
+                                endpoint_type='adminURL')
+        ])

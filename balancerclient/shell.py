@@ -102,6 +102,11 @@ class OpenStackBalancerShell(object):
                             default=utils.env('SERVICE_ENDPOINT'),
                             help='Defaults to env[SERVICE_ENDPOINT]')
 
+        parser.add_argument('--endpoint_type',
+                            metavar='<service-endpoint-type>',
+                            default=utils.env('OS_BALANCER_ENDPOINT_TYPE'),
+                            help='Defaults to env[OS_BALANCER_ENDPOINT_TYPE]')
+
         return parser
 
     def get_subcommand_parser(self, version):
@@ -234,6 +239,7 @@ class OpenStackBalancerShell(object):
                 tenant_id=args.os_tenant_id,
                 token=token,
                 endpoint=endpoint,
+                endpoint_type=args.endpoint_type,
                 password=args.os_password,
                 auth_url=args.os_auth_url,
                 region_name=args.os_region_name)
