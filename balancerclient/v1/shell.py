@@ -29,6 +29,9 @@ def extra_args(argument):
 
 
 def do_device_list(cl, args):
+    """
+    List available load-balancing devices
+    """
     devices = cl.devices.list()
     utils.print_list(devices, ('id', 'name', 'type', 'version', 'ip', 'port',
                                'user', 'password'))
@@ -36,6 +39,9 @@ def do_device_list(cl, args):
 
 @utils.arg('id', metavar='<device-id>', help='Device ID to display')
 def do_device_show(cl, args):
+    """
+    Describe a specific load-balancing device
+    """
     device = cl.devices.get(args.id)
     utils.print_dict(device._info)
 
@@ -55,6 +61,9 @@ def do_device_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_device_create(cl, args):
+    """
+    Create a new load-balancing device
+    """
     device = cl.devices.create(args.name, args.type, args.version, args.ip,
                                args.port, args.user, args.password,
                                **extra_args(args.extra))
@@ -63,15 +72,24 @@ def do_device_create(cl, args):
 
 @utils.arg('id', metavar='<device-id>', help='Device ID to delete')
 def do_device_delete(cl, args):
+    """
+    Delete a specific load-balancing device
+    """
     cl.devices.delete(args.id)
 
 
 def do_algorithms_list(cl, args):
+    """
+    List available algorithms
+    """
     algos = cl.devices.list_algoritms()
     utils.print_flat_list(algos, ['algorithms'])
 
 
 def do_protocols_list(cl, args):
+    """
+    List available protocols
+    """
     protos = cl.devices.list_protocols()
     utils.print_flat_list(protos, ['protocols'])
 
@@ -79,12 +97,18 @@ def do_protocols_list(cl, args):
 
 
 def do_lb_list(cl, args):
+    """
+    List load balancers for a particular device
+    """
     lbs = cl.loadbalancers.list()
     utils.print_list(lbs, ('id', 'name', 'algorithm', 'protocol'))
 
 
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to display')
 def do_lb_show(cl, args):
+    """
+    Describe a specific load balancer
+    """
     lb = cl.loadbalancers.get(args.id)
     utils.print_dict(lb.get_info())
 
@@ -97,6 +121,9 @@ def do_lb_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Load Balancer extra properties')
 def do_lb_create(cl, args):
+    """
+    Create a new load balancer
+    """
     lb = cl.loadbalancers.create(args.name, args.algorithm, args.protocol,
                                  **extra_args(args.extra))
     utils.print_dict(lb.get_info())
@@ -110,6 +137,9 @@ def do_lb_create(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_lb_update(cl, args):
+    """
+    Update a specific load balancer
+    """
     kwargs = extra_args(args.extra)
     if args.name:
         kwargs['name'] = args.name
@@ -133,6 +163,9 @@ def do_lb_update(cl, args):
 
 @utils.arg('id', metavar='<lb-id>', help='LoadBalancer ID to delete')
 def do_lb_delete(cl, args):
+    """
+    Delete a specific load balancer
+    """
     cl.loadbalancers.delete(args.id)
 
 
@@ -141,6 +174,9 @@ def do_lb_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_node_list(cl, args):
+    """
+    List nodes for a particular load balancer
+    """
     nodes = cl.nodes.list(args.lb_id)
     utils.print_list(nodes, ('id', 'name', 'type', 'address', 'port',
                              'weight', 'condition', 'status'))
@@ -149,6 +185,9 @@ def do_node_list(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID to display')
 def do_node_show(cl, args):
+    """
+    Describe a specific node
+    """
     node = cl.nodes.get(args.lb_id, args.id)
     utils.print_dict(node._info)
 
@@ -167,6 +206,9 @@ def do_node_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
            help='Extra properties')
 def do_node_create(cl, args):
+    """
+    Create a new node
+    """
     node = cl.nodes.create(args.lb_id, args.name, args.type, args.address,
                            args.port, args.weight, args.condition,
                            **extra_args(args.extra))
@@ -184,6 +226,9 @@ def do_node_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID')
 def do_node_update(cl, args):
+    """
+    Update a specific node
+    """
     kwargs = extra_args(args.extra)
     if args.name:
         kwargs['name'] = args.name
@@ -214,6 +259,9 @@ def do_node_update(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<node-id>', help='Node ID')
 def do_node_delete(cl, args):
+    """
+    Delete a specific node
+    """
     cl.nodes.delete(args.lb_id, args.id)
 
 
@@ -222,6 +270,9 @@ def do_node_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_list(cl, args):
+    """
+    List probes for a particular load balancer
+    """
     probes = cl.probes.list(args.lb_id)
     utils.print_list(probes, ('id', 'name', 'type'))
 
@@ -229,6 +280,9 @@ def do_probe_list(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID to display')
 def do_probe_show(cl, args):
+    """
+    Describe a specific probe
+    """
     probe = cl.probes.get(args.lb_id, args.id)
     utils.print_dict(probe._info)
 
@@ -240,6 +294,9 @@ def do_probe_show(cl, args):
             help='Extra properties')
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_probe_create(cl, args):
+    """
+    Create a new probe
+    """
     probe = cl.probes.create(args.lb_id, args.name, args.type,
                              **extra_args(args.extra))
     utils.print_dict(probe._info)
@@ -248,6 +305,9 @@ def do_probe_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<probe-id>', help='Probe ID')
 def do_probe_delete(cl, args):
+    """
+    Delete a specific probe
+    """
     cl.probes.delete(args.lb_id, args.id)
 
 
@@ -256,6 +316,9 @@ def do_probe_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_sticky_list(cl, args):
+    """
+    List sticky commands for a particular load balancer
+    """
     stickies = cl.stickies.list(args.lb_id)
     utils.print_list(stickies, ('id', 'name', 'type'))
 
@@ -263,6 +326,9 @@ def do_sticky_list(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID to display')
 def do_sticky_show(cl, args):
+    """
+    Describe a specific sticky command
+    """
     sticky = cl.stickies.get(args.lb_id, args.id)
     utils.print_dict(sticky._info)
 
@@ -275,6 +341,9 @@ def do_sticky_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_sticky_create(cl, args):
+    """
+    Create a new sticky command
+    """
     sticky = cl.stickies.create(args.lb_id, args.name, args.type,
                                 **extra_args(args.extra))
     utils.print_dict(sticky._info)
@@ -283,6 +352,9 @@ def do_sticky_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
 def do_sticky_delete(cl, args):
+    """
+    Delete a specific sticky command
+    """
     cl.stickies.delete(args.lb_id, args.id)
 
 
@@ -291,6 +363,9 @@ def do_sticky_delete(cl, args):
 
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 def do_vip_list(cl, args):
+    """
+    List virtual IPs for a particular load balancer
+    """
     vips = cl.vips.list(args.lb_id)
     utils.print_list(vips, ('id', 'name', 'address', 'port'))
 
@@ -298,6 +373,9 @@ def do_vip_list(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<vip-id>', help='Virtual IP ID to display')
 def do_vip_show(cl, args):
+    """
+    Describe a specific virtual IP
+    """
     vip = cl.vips.get(args.lb_id, args.id)
     utils.print_dict(vip._info)
 
@@ -316,6 +394,9 @@ def do_vip_show(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_vip_create(cl, args):
+    """
+    Create a new virtual IP
+    """
     vip = cl.vips.create(args.lb_id, args.name, args.address, args.mask,
                          args.port, type=args.type, vlan=args.vlan,
                          **extra_args(args.extra))
@@ -325,6 +406,9 @@ def do_vip_create(cl, args):
 @utils.arg('lb_id', metavar='<lb-id>', help='LoadBalancer ID')
 @utils.arg('id', metavar='<sticky-id>', help='Sticky ID')
 def do_vip_delete(cl, args):
+    """
+    Delete a specific virtual IP
+    """
     cl.vips.delete(args.lb_id, args.id)
 
 
@@ -338,6 +422,9 @@ def do_vip_delete(cl, args):
 @utils.arg('--extra', metavar="<key=value>", action='append', default=[],
             help='Extra properties')
 def do_vip_update(cl, args):
+    """
+    Update a specific virtual IP
+    """
     kwargs = extra_args(args.extra)
     if args.name:
         kwargs['name'] = args.name
