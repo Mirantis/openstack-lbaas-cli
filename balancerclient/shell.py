@@ -289,3 +289,6 @@ def main():
     except Exception, err:
         LOG.exception("The operation executed with an error %r." % err)
         raise
+
+if __name__ == '__main__':
+    main()
