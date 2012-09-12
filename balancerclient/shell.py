@@ -225,7 +225,7 @@ class OpenStackBalancerShell(object):
                         'env[OS_AUTH_URL]')
 
         if utils.isunauthenticated(args.func):
-            self.cs = shell_generic.CLIENT_CLASS(endpoint=args.os_auth_url)
+            self.cs = shell_v1.CLIENT_CLASS(endpoint=args.os_auth_url)
         else:
             token = None
             endpoint = None
