@@ -1,33 +1,46 @@
-CLI client for OpenStack LBaaS project
-======================================
+# CLI client for OpenStack LBaaS project
+
+* OpenStack LBaaS project: https://github.com/Mirantis/openstack-lbaas
 * Project overview: https://docs.google.com/document/pub?id=1DRgQhZJ73EyzQ2KvzVQd7Li9YEL7fXWBp8reMdAEhiM
 * Screencast: http://www.youtube.com/watch?v=NgAL-kfdbtE
 * API draft: https://docs.google.com/document/pub?id=11WWy7MQN1RIK7XdvQtUwkC_EIrykEDproFy9Pekm3wI
 * Roadmap: https://docs.google.com/document/pub?id=1yJZXI0WfpAZKhHaLQu7LaxGLrs4REmn0a5bYVbvsCTQ
 
 
-Quick Start
-~~~~~~~~~~~
+## Getting Started
 
 If you'd like to run trunk, you can clone the git repo:
 
+```bash
     git clone git://github.com/Mirantis/openstack-lbaas-cli.git
+```
 
 Install LBaaS.cli by executing:
 
+```bash
     ./run_tests.sh                           # create virtualenv in .venv folder and run unit tests
     .venv/bin/python setup.py install        # install client into virtualenv
+```
+
+The client depends on [LBaaS service](https://github.com/Mirantis/openstack-lbaas), start it by executing (refer to project docs for more details):
+
+```bash
+    cd openstack-lbaas/
+    ./.venv/bin/python ./bin/balancer-api --config-file etc/balancer-api-paste.ini --debug
+```
 
 Run LBaaS.cli by executing:
 
+```
     .venv/bin/lbaas-cli
+```
 
 
-Features
-~~~~~~~~
+## Features
 
 The tool provides cli interface to LBaaS service.
 
+```
 usage: balancer [--os_username <auth-user-name>]
                 [--os_password <auth-password>]
                 [--os_tenant_name <auth-tenant-name>]
@@ -97,17 +110,16 @@ Optional arguments:
                         Defaults to env[OS_BALANCER_ENDPOINT_TYPE]
 
 See "balancer help COMMAND" for help on a specific command.
+```
 
-Note: integration with Keystone is not available in the current version
-
-Example of typical workflow
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## Example of typical workflow
 
 Before running the tool make sure that LBaaS service is up and running. In the
 following examples it is assumed that service is available at localhost:8181.
 
-1. Create a new device
+### 1. Create a new device
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181 device-create --name test --type HAPROXY --version 1 --ip 192.168.19.245 --port 22 --user user --password swordfish
 
    +----------+----------------------------------+
@@ -122,9 +134,11 @@ following examples it is assumed that service is available at localhost:8181.
    | user     | user                             |
    | version  | 1                                |
    +----------+----------------------------------+
+```
 
-2. Show list of devices
+### 2. Show list of devices
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181 device-list
 
    +----------------------------------+------+---------+---------+----------------+------+------+-----------+
@@ -132,10 +146,12 @@ following examples it is assumed that service is available at localhost:8181.
    +----------------------------------+------+---------+---------+----------------+------+------+-----------+
    | 46ae427db95e464bb99ae0b883c627cc | test | HAPROXY | 1       | 192.168.19.245 | 22   | user | swordfish |
    +----------------------------------+------+---------+---------+----------------+------+------+-----------+
+```
 
-3. Create a new load balancer
+### 3. Create a new load balancer
 
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id lb-create --name test-lb --algorithm RoundRobin --protocol HTTP
+```
+   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id lb-create --name test-lb --algorithm ROUND_ROBIN --protocol HTTP
 
    +------------+----------------------------------+
    | Property   | Value                            |
@@ -151,9 +167,11 @@ following examples it is assumed that service is available at localhost:8181.
    | tenant_id  | tenant_id                        |
    | updated_at | 2012-09-12T15:38:42.094760       |
    +------------+----------------------------------+
+```
 
-4. Create virtual ip
+### 4. Create virtual ip
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id vip-create --name test-vip --address 192.168.19.245 --mask 255.255.255.255 --port 80  1158c2575d2b408991fe142c8b70f77e
 
    +----------+----------------------------------+
@@ -170,9 +188,12 @@ following examples it is assumed that service is available at localhost:8181.
    | sf_id    | 8684b200edb24ec1970b4280b16fd466 |
    | status   | None                             |
    +----------+----------------------------------+
+```
+_Note_ The load balancer id should be changed to the one returned by lb-create
 
-5. Add node to load balancer
+### 5. Add node to load balancer
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id node-create --name node-uno --type dummy --address 192.168.19.245 --port 8001 --weight 1 --condition ENABLED  1158c2575d2b408991fe142c8b70f77e
 
    +-----------+----------------------------------+
@@ -191,9 +212,12 @@ following examples it is assumed that service is available at localhost:8181.
    | vm_id     | None                             |
    | weight    | 1                                |
    +-----------+----------------------------------+
+```
+_Note_ The load balancer id should be changed to the one returned by lb-create
 
-6. Specify probe for node health monitoring
+### 6. Specify probe for node health monitoring
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id probe-create --name test-probe --type HTTP --extra url=/ --extra method=GET --extra status=200  1158c2575d2b408991fe142c8b70f77e
 
    +----------+----------------------------------+
@@ -208,9 +232,12 @@ following examples it is assumed that service is available at localhost:8181.
    | type     | HTTP                             |
    | url      | /                                |
    +----------+----------------------------------+
+```
+_Note_ The load balancer id should be changed to the one returned by lb-create
 
-7. Suspend node
+### 7. Suspend node
 
+```
    # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id node-update --condition DISABLED  1158c2575d2b408991fe142c8b70f77e 033c488b66204b35a87e6d38701a42cc
 
    Node has been updated.
@@ -230,4 +257,5 @@ following examples it is assumed that service is available at localhost:8181.
    | vm_id     | None                             |
    | weight    | 1                                |
    +-----------+----------------------------------+
-
+```
+_Note_ The load balancer id and node id should be changed to the one returned by lb-create and node-create
