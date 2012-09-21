@@ -32,7 +32,7 @@ The client depends on [LBaaS service](https://github.com/Mirantis/openstack-lbaa
 Run LBaaS.cli by executing:
 
 ```
-    .venv/bin/lbaas-cli
+    .venv/bin/balancer
 ```
 
 
@@ -120,7 +120,7 @@ following examples it is assumed that service is available at localhost:8181.
 ### 1. Create a new device
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181 device-create --name test --type HAPROXY --version 1 --ip 192.168.19.245 --port 22 --user user --password swordfish
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181 device-create --name test --type HAPROXY --version 1 --ip 192.168.19.245 --port 22 --user user --password swordfish
 
    +----------+----------------------------------+
    | Property | Value                            |
@@ -139,7 +139,7 @@ following examples it is assumed that service is available at localhost:8181.
 ### 2. Show list of devices
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181 device-list
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181 device-list
 
    +----------------------------------+------+---------+---------+----------------+------+------+-----------+
    | id                               | name | type    | version | ip             | port | user | password  |
@@ -151,7 +151,7 @@ following examples it is assumed that service is available at localhost:8181.
 ### 3. Create a new load balancer
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id lb-create --name test-lb --algorithm ROUND_ROBIN --protocol HTTP
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181/tenant_id lb-create --name test-lb --algorithm ROUND_ROBIN --protocol HTTP
 
    +------------+----------------------------------+
    | Property   | Value                            |
@@ -172,7 +172,7 @@ following examples it is assumed that service is available at localhost:8181.
 ### 4. Create virtual ip
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id vip-create --name test-vip --address 192.168.19.245 --mask 255.255.255.255 --port 80  1158c2575d2b408991fe142c8b70f77e
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181/tenant_id vip-create --name test-vip --address 192.168.19.245 --mask 255.255.255.255 --port 80  1158c2575d2b408991fe142c8b70f77e
 
    +----------+----------------------------------+
    | Property | Value                            |
@@ -194,7 +194,7 @@ _Note_ The load balancer id should be changed to the one returned by lb-create
 ### 5. Add node to load balancer
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id node-create --name node-uno --type dummy --address 192.168.19.245 --port 8001 --weight 1 --condition ENABLED  1158c2575d2b408991fe142c8b70f77e
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181/tenant_id node-create --name node-uno --type dummy --address 192.168.19.245 --port 8001 --weight 1 --condition ENABLED  1158c2575d2b408991fe142c8b70f77e
 
    +-----------+----------------------------------+
    | Property  | Value                            |
@@ -218,7 +218,7 @@ _Note_ The load balancer id should be changed to the one returned by lb-create
 ### 6. Specify probe for node health monitoring
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id probe-create --name test-probe --type HTTP --extra url=/ --extra method=GET --extra status=200  1158c2575d2b408991fe142c8b70f77e
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181/tenant_id probe-create --name test-probe --type HTTP --extra url=/ --extra method=GET --extra status=200  1158c2575d2b408991fe142c8b70f77e
 
    +----------+----------------------------------+
    | Property | Value                            |
@@ -238,7 +238,7 @@ _Note_ The load balancer id should be changed to the one returned by lb-create
 ### 7. Suspend node
 
 ```
-   # .venv/bin/lbaas-cli --token fake --endpoint http://localhost:8181/tenant_id node-update --condition DISABLED  1158c2575d2b408991fe142c8b70f77e 033c488b66204b35a87e6d38701a42cc
+   # .venv/bin/balancer --token fake --endpoint http://localhost:8181/tenant_id node-update --condition DISABLED  1158c2575d2b408991fe142c8b70f77e 033c488b66204b35a87e6d38701a42cc
 
    Node has been updated.
    +-----------+----------------------------------+

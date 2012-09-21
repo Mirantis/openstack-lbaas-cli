@@ -27,7 +27,7 @@ def read_file(file_name):
 
 
 setuptools.setup(
-    name="lbaas-cli",
+    name="python-balancerclient",
     version="2012.1",
     description="Console client for OpenStack LBaaS API",
     license="Apache License, Version 2.0",
@@ -36,7 +36,7 @@ setuptools.setup(
     tests_require=["nose", "mock"],
     test_suite="nose.collector",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
@@ -45,6 +45,6 @@ setuptools.setup(
         "Programming Language :: Python"
     ],
     entry_points={
-        'console_scripts': ['lbaas-cli = balancerclient.shell:main'],
+        'console_scripts': ['balancer = balancerclient.shell:main'],
     }
 )
