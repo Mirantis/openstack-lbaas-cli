@@ -1,6 +1,10 @@
 # CLI client for OpenStack LBaaS project
 
+* Project wiki: https://github.com/Mirantis/openstack-lbaas-cli/wiki
 * OpenStack LBaaS project: https://github.com/Mirantis/openstack-lbaas
+* OpenStack Horizon for LBaaS project: https://github.com/Mirantis/openstack-lbaas-horizon/tree/lbaas
+
+### LBaaS overview
 * Project overview: https://docs.google.com/document/pub?id=1DRgQhZJ73EyzQ2KvzVQd7Li9YEL7fXWBp8reMdAEhiM
 * Screencast: http://www.youtube.com/watch?v=NgAL-kfdbtE
 * API draft: https://docs.google.com/document/pub?id=11WWy7MQN1RIK7XdvQtUwkC_EIrykEDproFy9Pekm3wI
@@ -12,27 +16,27 @@
 If you'd like to run trunk, you can clone the git repo:
 
 ```bash
-    git clone git://github.com/Mirantis/openstack-lbaas-cli.git
+git clone git://github.com/Mirantis/openstack-lbaas-cli.git
 ```
 
 Install LBaaS.cli by executing:
 
 ```bash
-    ./run_tests.sh                           # create virtualenv in .venv folder and run unit tests
-    .venv/bin/python setup.py install        # install client into virtualenv
+./run_tests.sh                           # create virtualenv in .venv folder and run unit tests
+.venv/bin/python setup.py install        # install client into virtualenv
 ```
 
 The client depends on [LBaaS service](https://github.com/Mirantis/openstack-lbaas), start it by executing (refer to project docs for more details):
 
 ```bash
-    cd openstack-lbaas/
-    ./.venv/bin/python ./bin/balancer-api --config-file etc/balancer-api-paste.ini --debug
+cd openstack-lbaas/
+./.venv/bin/python ./bin/balancer-api --config-file etc/balancer-api-paste.ini --debug
 ```
 
 Run LBaaS.cli by executing:
 
 ```
-    .venv/bin/balancer
+.venv/bin/balancer
 ```
 
 
