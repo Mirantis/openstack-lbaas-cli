@@ -10,4 +10,4 @@ covhtml
 build
 dist
 trace.out
-python_balancerclient.egg-info
+*.egg-info

@@ -164,9 +164,10 @@ def create_virtualenv(venv=VENV, no_site_packages=True):
     """
     print 'Creating venv...',
     if no_site_packages:
-        run_command(['virtualenv', '-q', '--no-site-packages', VENV])
+        run_command(['virtualenv', '-q', '--no-site-packages', '--distribute',
+                     VENV])
     else:
-        run_command(['virtualenv', '-q', VENV])
+        run_command(['virtualenv', '-q', '--distribute', VENV])
     print 'done.'
     print 'Installing pip in virtualenv...',
     if not run_command(['tools/with_venv.sh', 'easy_install',

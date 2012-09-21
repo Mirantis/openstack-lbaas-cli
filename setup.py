@@ -29,14 +29,14 @@ def read_file(file_name):
 setuptools.setup(
     name="python-balancerclient",
     version="2012.1",
-    description="Client library for OpenStack LB API.",
+    description="Console client for OpenStack LBaaS API",
     license="Apache License, Version 2.0",
     packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
     install_requires=requirements,
     tests_require=["nose", "mock"],
     test_suite="nose.collector",
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
