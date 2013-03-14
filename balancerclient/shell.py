@@ -194,10 +194,10 @@ class OpenStackBalancerShell(object):
             # but is missing something
             if args.token or args.endpoint and not (
                     args.token and args.endpoint):
-                if not args.token:
-                    raise exc.CommandError(
-                        'Expecting a token provided via either --token or '
-                        'env[SERVICE_TOKEN]')
+                #if not args.token:
+                #    raise exc.CommandError(
+                #        'Expecting a token provided via either --token or '
+                #        'env[SERVICE_TOKEN]')
 
                 if not args.endpoint:
                     raise exc.CommandError(
@@ -229,8 +229,9 @@ class OpenStackBalancerShell(object):
         else:
             token = None
             endpoint = None
-            if args.token and args.endpoint:
+            if args.token:
                 token = args.token
+            if args.endpoint:
                 endpoint = args.endpoint
             api_version = options.os_balancer_api_version
             self.cs = self.get_api_class(api_version)(

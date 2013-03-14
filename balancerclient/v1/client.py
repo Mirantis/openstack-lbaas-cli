@@ -24,6 +24,26 @@ from . import stickies
 from . import vips
 
 
+class HTTPClient(client.HTTPClient):
+    def __init__(self, endpoint=None, token=None, **kwargs):
+        if endpoint and not token:
+            self.user_endpoint = endpoint
+            endpoint = None
+        else:
+            self.user_endpoint = None
+        super(HTTPClient, self).__init__(
+                endpoint=endpoint, token=token, **kwargs)
+
+    def _get_endpoint(self, admin_url=False):
+        if self.user_endpoint:
+            if admin_url:
+                return self.user_endpoint
+            else:
+                return self.user_endpoint + '/' + self.auth_tenant_id
+        else:
+            return super(HTTPClient, self)._get_endpoint(admin_url)
+
+
 class Client(object):
     """Client for the OpenStack LBaaS v1 API.
 
@@ -35,7 +55,7 @@ class Client(object):
     """
 
     def __init__(self, **kwargs):
-        self.client = client.HTTPClient(**kwargs)
+        self.client = HTTPClient(**kwargs)
         self.devices = devices.DeviceManager(self)
         self.loadbalancers = loadbalancers.LoadBalancerManager(self)
         self.nodes = nodes.NodeManager(self)
