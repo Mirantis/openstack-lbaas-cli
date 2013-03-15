@@ -93,6 +93,14 @@ def do_protocols_list(cl, args):
     protos = cl.devices.list_protocols()
     utils.print_flat_list(protos, ['protocols'])
 
+
+def do_vips_list(cl, args):
+    """
+    List available protocols
+    """
+    vips = cl.devices.list_vips()
+    utils.print_flat_list(vips, ['vips'])
+
 # LoadBalancers
 
 

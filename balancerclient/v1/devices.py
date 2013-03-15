@@ -54,3 +54,6 @@ class DeviceManager(base.Manager):
 
     def list_protocols(self):
         return self._get('/protocols', 'protocols', return_raw=True)
+
+    def list_vips(self):
+        return self._get('/vips', 'vips', return_raw=True)
